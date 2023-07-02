@@ -1,0 +1,219 @@
+#panel-fotos table{
+  display: block;
+  text-align: center !important;
+}
+
+#panel-fotos table tbody {
+  display: inline;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.action-icons {
+  border-radius: 50% !important;
+  height: 2.3em;
+  margin: 0 2px;
+  width: 2.3em;
+}
+
+.ContainerIndent {
+  display: block;
+  margin: 0px auto;
+  padding: .5em
+;
+}
+
+.Container100 {
+  display: inline-block;
+  width: 100%;
+  float: left;
+}
+
+.form-button {
+  padding: 0.5em;
+}
+
+.Fleft {
+  float: left;
+}
+
+.fluid-button {
+  width: 2.3em !important;
+}
+
+.Fright {
+  float: right;
+}
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold !important;
+  font-size: 1.2em;
+  text-align: left;
+}
+
+.label.required:before {
+  content: "*";
+  display: inline-block;
+  color: red;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.login-invalido {
+  color: red;
+}
+
+.power-icons {
+  color: green;
+  text-shadow: #000 1px 1px;
+}
+
+.break {
+  word-break: break-all;
+}
+
+
+.blue {
+  background: #0288d1 !important;
+}
+
+.green {
+  background: #66BB6A !important;
+}
+
+.orange {
+  background: #FB8C00 !important;
+}
+
+.red {
+  background: #E53935 !important;
+}
+
+.largura80px {
+  width: 80px;
+}
+
+.largura100px {
+  width: 100px;
+}
+
+.largura120px {
+  width: 120px;
+}
+
+.largura150px {
+  width: 150px;
+}
+
+.marTop10 {
+  margin-top: 10px;
+}
+
+.marTop20 {
+  margin-top: 20px;
+}
+
+.text-red {
+  color: red !important;
+}
+
+.desc-item {
+  width: 300px;
+}
+
+.nome-cliente {
+  width: 300px;
+}
+
+.cidade-cliente {
+  width: 150px;
+}
+
+/*Yellow Button*/
+.ui-button.ui-state-default.orange-button {
+  background-color: #FB8C00;
+  border-color: #d17300; }
+.ui-button.ui-state-default.orange-button.ui-state-hover {
+  background-color: #ffa536; }
+.ui-button.ui-state-default.orange-button.ui-state-active {
+  background-color: #e07700; }
+
+.watch {
+  display: inline-block;
+  height: 135px;
+  position: relative;
+  width: 180px;
+}
+
+.watch:hover::after {
+  visibility: visible
+}
+
+.watch img {
+  width: 100%
+}
+
+.watch::after {
+  background: url(http://www.incopa.com.br/alterar-foto.png) no-repeat;
+  background-position: 50% 50%;
+  content: '';
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+  width: 100%
+}
+
+@media screen and (max-width: 1024px){
+  .desc-item {
+    width: 150px;
+  }
+
+  .nome-cliente {
+    width: auto;
+  }
+
+}
+
+@media screen and (max-width: 500px){
+  .tres-botoes {
+    display: grid;
+  }
+
+  .btn-1 {
+    order: 2;
+    margin-top: 10px;
+  }
+
+  .btn-2 {
+    order: 3;
+    margin-top: 10px;
+  }
+
+  .btn-3 {
+    order: 1;
+    margin-top: 10px;
+  }
+
+  .footer-text {
+    font-size: .9em;
+  }
+
+  .video-mobile {
+    width: 270px;
+  }
+}

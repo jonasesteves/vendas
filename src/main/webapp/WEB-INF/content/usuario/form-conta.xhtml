@@ -1,0 +1,76 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <h:form id="f" prependId="false">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <p:growl id="growl" life="10000" escape="true"
+                 showDetail="#{not facesContext.validationFailed}"
+                 showSummary="true"
+                 sticky="#{not facesContext.validationFailed}">
+            <p:autoUpdate disabled="false"/>
+        </p:growl>
+        <div class="card">
+            <h1>Editar Senha</h1>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <label for="senha-usuario" class="label required">Senha Atual</label>
+                    <p:password id="senha-usuario"
+                                value="#{usuarioController.senha}"
+                                required="true"
+                                requiredMessage="Digite sua senha atual.">
+                    </p:password>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <label for="nova-senha" class="label required">Nova Senha</label>
+                    <p:password id="nova-senha"
+                                value="#{usuarioController.novaSenha}"
+                                required="true"
+                                requiredMessage="Digite a nova senha." feedback="true" label="label"
+                                promptLabel="força da senha"
+                                weakLabel="senha muito fraca"
+                                goodLabel="senha razoável"
+                                strongLabel="senha forte"
+                                match="confirma-senha"
+                                validatorMessage="Os campos Nova Senha e Confirme a Nova Senha precisam ser iguais.">
+                    </p:password>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <label for="confirma-senha" class="label required">Confirme a Nova Senha</label>
+                    <p:password id="confirma-senha"
+                                value="#{usuarioController.novaSenha}"
+                                required="true"
+                                requiredMessage="Confirme a nova senha.">
+                    </p:password>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_cancelar"
+                                 action="#{usuarioController.urlProvider.getUrlIndex()}"
+                                 styleClass="gray-button form-button Fleft" immediate="true"
+                                 icon="fa fa-close" iconPos="left" value="Cancelar"
+                                 title="Cancelar operação"/>
+
+                <p:commandButton id="btn_salvar"
+                                 action="#{usuarioController.atualizaSenha()}"
+                                 styleClass="green-button form-button Fright"
+                                 icon="fa fa-save" iconPos="left" value="Salvar"
+                                 title="Salvar usuário"/>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+        </div>
+    </h:form>
+
+</ui:composition>

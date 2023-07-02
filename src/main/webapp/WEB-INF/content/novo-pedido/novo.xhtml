@@ -1,0 +1,43 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui">
+
+    <div class="card">
+        <h1>Novo Pedido</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false"/>
+            </p:growl>
+
+            <p:outputPanel deferred="true">
+                <div class="ContainerIndent">
+                    <h3>Seu pedido foi enviado com sucesso.</h3>
+                    <p>Deseja enviar um novo pedido ou bonificação ao cliente <strong>#{novoPedidoController.cliente.nome}</strong>?</p>
+                    <p:commandButton id="btn_nao"
+                                     action="#{pedidoController.urlProvider.getUrlIndex()}"
+                                     styleClass="red-button form-button Fleft"
+                                     immediate="true"
+                                     icon="fa fa-close"
+                                     iconPos="left"
+                                     value="Não"
+                                     title="Não">
+                    </p:commandButton>
+
+                    <p:commandButton id="btn_sim"
+                                     action="#{novoPedidoController.urlProvider.getUrlIndexNovoPedidoCliente(novoPedidoController.cliente.id)}"
+                                     styleClass="green-button form-button Fright"
+                                     icon="fa fa-check" iconPos="left"
+                                     value="Sim"
+                                     title="Sim">
+                    </p:commandButton>
+
+                    <span style="clear: left; display: block;"></span>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </div>
+</ui:composition>

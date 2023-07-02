@@ -1,0 +1,127 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1><ui:insert name="tituloCard"/></h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <div class="ContainerIndent">
+                <p:fieldset id="filtros"
+                            legend="Filtros"
+                            toggleable="true"
+                            toggleSpeed="400"
+                            collapsed="true">
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputLabel for="cpf" value="CPF" styleClass="label"/>
+                            <p:inputText id="cpf" value="#{motoristaController.dataModel.filter.motoristaFiltro.cpf}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputLabel for="nome" value="Nome" styleClass="label"/>
+                            <p:inputText id="nome" value="#{motoristaController.dataModel.filter.motoristaFiltro.nome}"/>
+                        </div>
+                    </div>
+
+                    <div class="ContainerIndent">
+                        <p:commandButton id="btn_limpar"
+                                         styleClass="black-button Fleft"
+                                         icon="fa fa-eraser"
+                                         iconPos="left"
+                                         value="Limpar"
+                                         title="Limpar campos."
+                                         actionListener="#{motoristaController.dataModel.filter.reset()}"
+                                         action="#{motoristaController.filtrar()}"
+                                         update="filtros motoristas">
+                        </p:commandButton>
+
+                        <p:commandButton id="btn_filtrar"
+                                         styleClass="blue-button Fright"
+                                         icon="fa fa-filter"
+                                         iconPos="left"
+                                         value="Filtrar"
+                                         title="Filtrar pelos campos preenchidos."
+                                         actionListener="#{motoristaController.filtrar()}"
+                                         update="motoristas">
+                        </p:commandButton>
+                    </div>
+                </p:fieldset>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="motoristas"
+                             var="motorista"
+                             value="#{motoristaController.dataModel}"
+                             emptyMessage="Nenhum registro encontrado."
+                             lazy="true"
+                             rowsPerPageTemplate="5, 10, 25, 50, 100"
+                             reflow="true"
+                             paginator="true" rows="5">
+
+                    <p:column headerText="CPF">
+                        <h:outputText value="${motorista.cpf}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{motorista.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Cidade">
+                        <h:outputText value="#{motorista.cidade}"/>
+                    </p:column>
+
+                    <p:column headerText="Ações" styleClass="text-center" exportable="false">
+                        <p:commandButton title="Detalhar"
+                                         icon="fa fa-info"
+                                         styleClass="action-icons blue-button"
+                                         action="#{motoristaController.urlProvider.getUrlDetalharMotorista(motorista.id)}"/>
+
+                        <p:commandButton title="Editar"
+                                         icon="fa fa-edit"
+                                         styleClass="action-icons orange-button"
+                                         action="#{motoristaController.urlProvider.getUrlEditarMotorista(motorista.id)}"/>
+
+                        <p:commandButton title="Excluir"
+                                         icon="fa fa-trash"
+                                         styleClass="action-icons red-button"
+                                         immediate="true"
+                                         update="motoristas"
+                                         action="#{motoristaController.excluir()}">
+                            <f:setPropertyActionListener value="#{motorista}"
+                                                         target="#{motoristaController.entidade}"/>
+                            <p:confirm header="Confirmação"
+                                       message="Deseja realmente excluir esse motorista?"
+                                       icon="fa fa-minus-circle Fs20 Red uix-icon-left-2"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton title="Cadastrar Motorista"
+                                 icon="fa fa-plus"
+                                 styleClass="green-button form-button" value="Cadastrar Motorista"
+                                 action="#{motoristaController.urlProvider.getUrlCadastrarMotorista()}"/>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="nao" value="Não" type="button"
+                                 styleClass="ui-confirmdialog-no red-button"
+                                 icon="ui-icon-close"/>
+                <p:commandButton id="sim" value="Sim" type="button"
+                                 styleClass="green-button ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+            </p:confirmDialog>
+        </h:form>
+    </div>
+
+</ui:composition>

@@ -1,0 +1,121 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <div class="card">
+        <h1>Editar Usuário</h1>
+
+        <h:form id="f" prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl id="growl" life="10000" escape="true"
+                     showDetail="true"
+                     showSummary="true"
+                     sticky="#{not facesContext.validationFailed}">
+                <p:autoUpdate disabled="false"/>
+            </p:growl>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <label for="ativo" class="label">Situação</label>
+                    <p:inputSwitch id="ativo" value="#{usuarioController.usuario.ativo}" onLabel="Ativo"
+                                   offLabel="Inativo"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <label for="tipo-usuario" class="label required">Tipo de Usuário</label>
+                    <p:selectOneMenu id="tipo-usuario" value="#{usuarioController.usuario.tipoUsuario}"
+                                     converter="#{tipoUsuarioConverter}"
+                                     required="true"
+                                     requiredMessage="Por favor, selecione um Tipo de Usuário."
+                                     update="growl2">
+                        <f:selectItem itemLabel="Selecione um Tipo de Usuário" itemValue=""/>
+                        <f:selectItems value="#{tipoUsuarioController.tiposUsuario()}" var="tipoUsuario"
+                                       itemValue="#{tipoUsuario}"
+                                       itemLabel="#{tipoUsuario.nome}"/>
+                    </p:selectOneMenu>
+                </div>
+            </div>
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                    <label for="nome-usuario" class="label">Nome do Usuário</label>
+                    <p:inputText id="nome-usuario" placeholder="Nome do Usuário"
+                                 value="#{usuarioController.usuario.nome}"
+                                 required="true"
+                                 readonly="true"
+                                 requiredMessage="Nome do Usuário é obrigatório!">
+                    </p:inputText>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                    <label for="email-usuario" class="label required">E-mail do Usuário</label>
+                    <p:inputText id="email-usuario" placeholder="E-mail do Usuário"
+                                 value="#{usuarioController.usuario.email}"
+                                 validator="EmailValidator"
+                                 required="true"
+                                 requiredMessage="Por favor, preencha o e-mail do usuário.">
+                    </p:inputText>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                    <label for="enviar-senha" class="label">Enviar Senha</label>
+                    <p:selectBooleanCheckbox id="enviar-senha"
+                                             value="#{usuarioController.usuario.enviarSenha}"/>
+
+                    <div class="ui-messages ui-widget" aria-live="polite">
+                        <div class="ui-messages-info ui-corner-all">
+                            <span class="ui-messages-info-icon"></span>
+                            <ul>
+                                <li>
+                                    <span class="ui-messages-info-summary">Info</span>
+                                    <span class="ui-messages-info-detail">Ao marcar esta opção, uma nova senha será enviada ao usuário.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ContainerIndent tres-botoes">
+                <p:commandButton id="btn_cancelar"
+                                 action="#{usuarioController.urlProvider.getUrlIndexUsuario()}"
+                                 styleClass="gray-button form-button Fleft btn-1" immediate="true"
+                                 icon="fa fa-close" iconPos="left" value="Cancelar"
+                                 title="Cancelar operação"/>
+
+                <p:commandButton id="btn_salvar"
+                                 action="#{usuarioController.update()}"
+                                 styleClass="green-button form-button Fright btn-2"
+                                 icon="fa fa-save" iconPos="left" value="Salvar"
+                                 title="Salvar usuário"/>
+
+                <p:commandButton id="btn_remover_credenciais"
+                                 action="#{usuarioController.removerCredenciais()}"
+                                 styleClass="red-button form-button Fright btn-3"
+                                 icon="fa fa-eraser" iconPos="left" value="Remover Credenciais"
+                                 title="Remover credenciais" disabled="${usuarioController.usuario.email == null}">
+                    <p:confirm header="Confirmação"
+                               message="Deseja remover permanentemente as informações de login deste usuário?"
+                               icon="ui-icon-alert"/>
+                </p:commandButton>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="nao" value="Não" type="button"
+                                 styleClass="ui-confirmdialog-no red-button"
+                                 icon="ui-icon-close"/>
+                <p:commandButton id="sim" value="Sim" type="button"
+                                 styleClass="green-button ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+            </p:confirmDialog>
+        </h:form>
+    </div>
+</ui:composition>

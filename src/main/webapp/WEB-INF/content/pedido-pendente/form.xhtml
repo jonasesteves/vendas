@@ -1,0 +1,194 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="card">
+        <h1>Pedido Detalhado</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="false" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="id-pedido" value="Pedido" styleClass="label"/>
+                    <p:inputText id="id-pedido" value="#{pedidoPendenteController.entidade.id}"
+                                 readonly="true"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="emissao-pedido" value="Emissão" styleClass="label"/>
+                    <p:inputText id="emissao-pedido"
+                                 value="#{pedidoPendenteController.entidade.dataEmissao}"
+                                 converter="#{localDateConverter}"
+                                 readonly="true">
+                    </p:inputText>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <h:outputLabel for="cliente-pedido" value="Cliente" styleClass="label"/>
+                    <p:inputText id="cliente-pedido" value="#{pedidoPendenteController.entidade.cliente.nome}"
+                                 readonly="true"/>
+                </div>
+            </div>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="empresa-pedido" value="Empresa" styleClass="label"/>
+                    <p:inputText id="empresa-pedido" value="#{pedidoPendenteController.entidade.empresa.nome}"
+                                 readonly="true"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="tipo-pedido" value="Tipo de Pedido" styleClass="label"/>
+                    <p:inputText id="tipo-pedido" value="#{pedidoPendenteController.entidade.operacao}"
+                                 readonly="true"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="tipo-bonificacao" value="Tipo de Bonificação" styleClass="label"/>
+                    <p:inputText id="tipo-bonificacao"
+                                 value="#{pedidoPendenteController.entidade.tipoBonificacao.descricao}"
+                                 readonly="true"/>
+                </div>
+            </div>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="ag-cobrador-pedido" value="Agente Cobrador" styleClass="label"/>
+                    <p:inputText id="ag-cobrador-pedido"
+                                 value="#{pedidoPendenteController.entidade.agenteCobrador.descricao}"
+                                 readonly="true"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="tipo-cobranca-pedido" value="Tipo de Cobrança" styleClass="label"/>
+                    <p:inputText id="tipo-cobranca-pedido"
+                                 value="#{pedidoPendenteController.entidade.tipoCobranca.descricao}"
+                                 readonly="true"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="forma-pgto-pedido" value="Forma de Pagamento" styleClass="label"/>
+                    <p:inputText id="forma-pgto-pedido"
+                                 value="#{pedidoPendenteController.entidade.formaPagamento.descricao}"
+                                 readonly="true"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable var="item" value="#{pedidoPendenteController.entidade.itens}"
+                             emptyMessage="Nenhum registro encontrado."
+                             sortMode="multiple"
+                             reflow="true">
+                    <f:facet name="header">
+                        Itens do Pedido
+                    </f:facet>
+                    <p:column headerText="Cód.">
+                        <h:outputText value="#{item.idEstoque}"/>
+                    </p:column>
+
+                    <p:column headerText="Descrição" styleClass="desc-item">
+                        <h:outputText value="#{item.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Quant." styleClass="text-right">
+                        <h:outputText value="${item.quantidade}"/>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Unit." styleClass="text-right">
+                        <h:outputText value="${item.valorTabelado}">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Venda." styleClass="text-right">
+                        <h:outputText value="${item.valorUnitario}">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Desc. (%)" styleClass="text-right">
+                        <h:outputText value="${item.desconto}">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Total." styleClass="text-right">
+                        <h:outputText value="${item.valorTotal}">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="desc-medio" value="Desconto Médio" styleClass="label"/>
+                        <p:inputNumber id="desc-medio"
+                                       thousandSeparator=""
+                                       decimalPlaces="2"
+                                       value="#{pedidoPendenteController.entidade.descontoMedio}"
+                                       readonly="true"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="vlr-total" value="Valor Total" styleClass="label"/>
+                        <p:inputText id="vlr-total" value="#{pedidoPendenteController.entidade.valorTotal}"
+                                     readonly="true">
+                            <f:convertNumber minFractionDigits="2"/>
+                        </p:inputText>
+                    </div>
+                </div>
+
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <h:outputLabel for="obs-pedido" value="Observações" styleClass="label"/>
+                        <p:inputText id="obs-pedido" value="#{pedidoPendenteController.entidade.observacao}"
+                                     readonly="true"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ContainerIndent tres-botoes">
+                <p:commandButton id="btn_voltar"
+                                 action="#{pedidoPendenteController.urlProvider.getUrlIndexPedidoPendente()}"
+                                 styleClass="blue-button form-button Fleft btn-1" immediate="true"
+                                 icon="fa fa-arrow-left" iconPos="left" value="Voltar"
+                                 title="Voltar"/>
+
+                <p:commandButton id="btn_liberar"
+                                 action="#{pedidoPendenteController.liberar()}"
+                                 styleClass="green-button form-button Fright btn-2"
+                                 icon="fa fa-check" iconPos="left" value="Liberar"
+                                 title="Liberar pedido">
+                    <p:confirm header="Confirmação" message="Deseja realmente liberar o pedido?" icon="ui-icon-alert"/>
+                </p:commandButton>
+
+                <p:commandButton id="btn_cancelar"
+                                 action="#{pedidoPendenteController.cancelar()}"
+                                 styleClass="red-button form-button Fright btn-3" immediate="true"
+                                 icon="fa fa-close" iconPos="left" value="Cancelar"
+                                 title="Cancelar pedido">
+                    <p:confirm header="Confirmação" message="Deseja realmente cancelar o pedido?" icon="ui-icon-alert"/>
+                </p:commandButton>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="nao" value="Não" type="button"
+                                 styleClass="ui-confirmdialog-no red-button"
+                                 icon="ui-icon-close"/>
+                <p:commandButton id="sim" value="Sim" type="button"
+                                 styleClass="green-button ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+            </p:confirmDialog>
+        </h:form>
+    </div>
+</ui:composition>

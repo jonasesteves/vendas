@@ -1,0 +1,16 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template/template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <f:metadata>
+        <f:event listener="#{pedidoEmbarcadoController.load(param['id'])}" type="preRenderView"/>
+    </f:metadata>
+
+    <ui:define name="title">Pedido Embarcado</ui:define>
+    <ui:define name="content">
+        <!-- Incluir o arquivo com o nucleo de listagem -->
+        <ui:include src="/WEB-INF/content/pedido-embarcado/detalhes.xhtml"/>
+    </ui:define>
+
+</ui:composition>

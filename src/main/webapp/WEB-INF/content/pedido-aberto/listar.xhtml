@@ -1,0 +1,70 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1>Pedidos em Aberto</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="pedidos"
+                             var="pedido"
+                             value="#{pedidoAbertoController.pedidos}"
+                             emptyMessage="Nenhum registro encontrado."
+                             rowsPerPageTemplate="5, 10, 25, 50, 100"
+                             reflow="true"
+                             paginator="true"
+                             rows="5">
+
+                    <p:column headerText="Emissão" sortBy="#{pedido.dataEmissao}" styleClass="largura80px">
+                        <h:outputText value="#{pedido.dataEmissao}" converter="#{localDateConverter}">
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Id Top" sortBy="#{pedido.id}" styleClass="largura80px">
+                        <h:outputText value="#{pedido.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Cliente" sortBy="#{pedido.cliente.nome}" styleClass="nome-cliente">
+                        <h:outputText value="#{pedido.cliente.nome}" styleClass="break"/>
+                    </p:column>
+
+                    <p:column headerText="Cidade">
+                        <h:outputText value="#{pedido.cliente.cidade}"/>
+                    </p:column>
+
+                    <p:column headerText="Valor Total" styleClass="largura80px">
+                    <h:outputText value="#{pedido.valorTotal}" styleClass="break Fright">
+                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                    </h:outputText>
+                </p:column>
+
+                    <p:column headerText="Ações" styleClass="text-center largura80px" exportable="false">
+                        <p:commandButton title="Detalhar"
+                                         icon="fa fa-info"
+                                         styleClass="action-icons blue-button"
+                                         ajax="false"
+                                         action="#{pedidoAbertoController.urlProvider.getUrlDetalharPedidoAberto(pedido.id)}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <h3>Exportar dados da tabela</h3>
+                <h:commandLink>
+                    <p:graphicImage name="/img/xls.png" />
+                    <p:dataExporter type="xlsx" target="pedidos" fileName="pedidos-abertos"/>
+                </h:commandLink>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

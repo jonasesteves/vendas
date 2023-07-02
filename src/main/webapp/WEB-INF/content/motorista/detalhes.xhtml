@@ -1,0 +1,208 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1><ui:insert name="tituloCard"/></h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3 text-center">
+                    <p:graphicImage id="photo"
+                                    width="180"
+                                    height="135"
+                                    value="#{fotoController.foto != null ? fotoController.foto : 'https://via.placeholder.com/180x135'}">
+
+                        <f:param name="id" value="#{motoristaController.entidade.id}"/>
+                    </p:graphicImage>
+                </div>
+
+                <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="cpf" value="CPF do Motorista" styleClass="label"/>
+                            <h:outputText id="cpf" value="#{motoristaController.entidade.cpf}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-8">
+                            <h:outputLabel for="nome" value="Nome" styleClass="label"/>
+                            <h:outputText id="nome" value="#{motoristaController.entidade.nome}"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="dt-nascimento" value="Data de Nascimento" styleClass="label"/>
+                            <h:outputText id="dt-nascimento"
+                                          value="#{motoristaController.entidade.dataNascimento}"
+                                          converter="#{localDateConverter}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-3 ui-lg-4">
+                            <h:outputLabel for="identidade" value="Identidade" styleClass="label"/>
+                            <h:outputText id="identidade" value="#{motoristaController.entidade.identidade}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-3 ui-lg-4">
+                            <h:outputLabel for="org-exp-rg" value="Órgão Exp." styleClass="label"/>
+                            <h:outputText id="org-exp-rg" value="#{motoristaController.entidade.orgaoExpedIdent}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-4">
+                    <h:outputLabel for="habilitacao" value="Habilitacao" styleClass="label"/>
+                    <h:outputText id="habilitacao" value="#{motoristaController.entidade.habilitacao}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-4">
+                    <h:outputLabel for="categoria" value="Categoria" styleClass="label"/>
+                    <h:outputText id="categoria" value="#{motoristaController.entidade.categoria}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-4">
+                    <h:outputLabel for="form-habilitacao" value="Form. Habilitação" styleClass="label"/>
+                    <h:outputText id="form-habilitacao" value="#{motoristaController.entidade.formHabilitacao}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                    <h:outputLabel for="endereco" value="Endereço" styleClass="label"/>
+                    <h:outputText id="endereco" value="#{motoristaController.entidade.endereco}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                    <h:outputLabel for="bairro" value="Bairro" styleClass="label"/>
+                    <h:outputText id="bairro" value="#{motoristaController.entidade.bairro}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                    <h:outputLabel for="cidade" value="Cidade" styleClass="label"/>
+                    <h:outputText id="cidade" value="#{motoristaController.entidade.cidade}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                    <h:outputLabel for="estado" value="Estado" styleClass="label"/>
+                    <h:outputText id="estado" value="#{motoristaController.entidade.estado}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                    <h:outputLabel for="cep" value="CEP" styleClass="label"/>
+                    <h:outputText id="cep" value="#{motoristaController.entidade.cep}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <h:outputLabel for="nome-pai" value="Nome do Pai" styleClass="label"/>
+                    <h:outputText id="nome-pai" value="#{motoristaController.entidade.nomePai}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <h:outputLabel for="nome-mae" value="Nome da Mãe" styleClass="label"/>
+                    <h:outputText id="nome-mae" value="#{motoristaController.entidade.nomeMae}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="telefones"
+                             var="telefone"
+                             emptyMessage="Nenhum registro encontrado."
+                             value="#{motoristaController.entidade.telefones}"
+                             paginator="false">
+
+                    <f:facet name="header">
+                        Telefones
+                    </f:facet>
+
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{telefone.tipoTelefone.descricao}"/>
+                    </p:column>
+
+                    <p:column headerText="Número">
+                        <h:outputText value="#{telefone.numero}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="referencias"
+                             var="referencia"
+                             emptyMessage="Nenhum registro encontrado."
+                             value="#{motoristaController.entidade.referencias}">
+                    <f:facet name="header">
+                        Referências
+                    </f:facet>
+
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{referencia.tipoReferencia}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{referencia.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Telefone">
+                        <h:outputText value="#{referencia.telefone}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent text-center marTop20">
+                <h2>Dados Bancários</h2>
+            </div>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <h:outputLabel for="favorecido" value="Favorecido" styleClass="label"/>
+                    <h:outputText id="favorecido" value="#{motoristaController.entidade.dadosBancarios.favorecido}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <h:outputLabel for="banco" value="Banco" styleClass="label"/>
+                    <h:outputText id="banco" value="#{motoristaController.entidade.dadosBancarios.banco.nome}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <h:outputLabel for="agencia" value="Agência" styleClass="label"/>
+                    <h:outputText id="agencia" value="#{motoristaController.entidade.dadosBancarios.agencia}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <h:outputLabel for="conta" value="Conta #{motoristaController.entidade.dadosBancarios.tipoConta.tipoConta}" styleClass="label"/>
+                    <h:outputText id="conta" value="#{motoristaController.entidade.dadosBancarios.conta}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_voltar"
+                                 action="#{motoristaController.urlProvider.getUrlIndexMotorista()}"
+                                 styleClass="blue-button form-button Fleft"
+                                 immediate="true"
+                                 icon="fa fa-arrow-left"
+                                 iconPos="left"
+                                 value="Voltar"
+                                 title="Voltar"/>
+
+                <p:commandButton id="btn_editar"
+                                 action="#{motoristaController.urlProvider.getUrlEditarMotorista(motoristaController.entidade.id)}"
+                                 styleClass="orange-button form-button Fright"
+                                 icon="fa fa-edit"
+                                 iconPos="left"
+                                 value="Editar"
+                                 title="Editar"/>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

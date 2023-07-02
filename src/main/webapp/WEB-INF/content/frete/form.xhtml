@@ -1,0 +1,676 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1><ui:insert name="tituloCard"/></h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true"
+                     showDetail="#{not facesContext.validationFailed}"
+                     showSummary="true"
+                     sticky="#{not facesContext.validationFailed}">
+                <p:autoUpdate disabled="false"/>
+            </p:growl>
+
+            <h:panelGroup id="panel">
+                <h:panelGroup id="panel-cadastro-motorista" rendered="#{motoristaController.entidade.id == null}">
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-3 ui-lg-3 text-center">
+                            <p:commandLink id="foto" class="watch"
+                                           ajax="true"
+                                           immediate="true"
+                                           onclick="PF('dlg-upload').show();">
+                                <p:graphicImage id="photo"
+                                                width="180"
+                                                height="135"
+                                                value="#{fotoController.foto}"
+                                                rendered="#{motoristaController.entidade.foto != null and empty motoristaController.nomeFoto}">
+                                    <f:param name="id" value="#{motoristaController.entidade.id}"/>
+                                </p:graphicImage>
+                                <p:graphicImage id="placeholder" class="alterar-foto"
+                                                width="180"
+                                                height="135"
+                                                name="#{empty motoristaController.nomeFoto ? 'img/180x135.jpg' : motoristaController.endFtReduz}"
+                                                rendered="${(motoristaController.entidade.foto == null and empty motoristaController.nomeFoto) or (motoristaController.entidade.foto != null and not empty motoristaController.nomeFoto)}"/>
+                            </p:commandLink>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-9 ui-lg-9">
+                            <div class="ui-fluid ui-g">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <h:outputLabel for="cpf-form" value="CPF do Motorista" styleClass="label required"/>
+                                    <p:inputMask id="cpf-form"
+                                                 mask="999.999.999-99"
+                                                 validator="CPFValidator"
+                                                 required="true"
+                                                 requiredMessage="Por favor, preencha o cpf do motorista."
+                                                 value="#{motoristaController.entidade.cpf}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <h:outputLabel for="nome" value="Nome" styleClass="label required"/>
+                                    <p:inputText id="nome" maxlength="150" required="true"
+                                                 requiredMessage="Por favor, preencha o nome do motorista."
+                                                 value="#{motoristaController.entidade.nome}"/>
+                                </div>
+                            </div>
+
+                            <div class="ui-fluid ui-g">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <h:outputLabel for="dt-nascimento" value="Data de Nascimento"
+                                                   styleClass="label required"/>
+                                    <p:calendar id="dt-nascimento" required="true"
+                                                converter="#{localDateConverter}"
+                                                locale="pt_BR"
+                                                mindate="01/01/1918"
+                                                navigator="true"
+                                                showOn="button"
+                                                mask="true"
+                                                pattern="dd/MM/yyyy"
+                                                requiredMessage="Por favor, preencha a data de nascimento."
+                                                value="#{motoristaController.entidade.dataNascimento}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-3 ui-lg-4">
+                                    <h:outputLabel for="identidade" value="Identidade" styleClass="label required"/>
+                                    <p:inputMask id="identidade"
+                                                 mask="99999?999999999999999"
+                                                 maxlength="20" required="true"
+                                                 requiredMessage="Por favor, preencha a identidade."
+                                                 value="#{motoristaController.entidade.identidade}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-3 ui-lg-4">
+                                    <h:outputLabel for="org-exp-rg" value="Órgão Exp." styleClass="label required"/>
+                                    <p:inputText id="org-exp-rg" required="true"
+                                                 requiredMessage="Por favor, preencha o órgão expeditor."
+                                                 styleClass="text-uppercase"
+                                                 converter="#{uppercaseConverter}"
+                                                 value="#{motoristaController.entidade.orgaoExpedIdent}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-3 ui-lg-4">
+                            <h:outputLabel for="habilitacao" value="Habilitacao" styleClass="label required"/>
+                            <p:inputMask id="habilitacao"
+                                         mask="99999?9999999999"
+                                         required="true" maxlength="45"
+                                         requiredMessage="Por favor, preencha a habilitação."
+                                         value="#{motoristaController.entidade.habilitacao}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-3 ui-lg-4">
+                            <h:outputLabel for="categoria" value="Categoria" styleClass="label required"/>
+                            <p:selectOneMenu id="categoria"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione a categoria."
+                                             value="#{motoristaController.entidade.categoria}">
+                                <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                <f:selectItems value="#{motoristaController.categorias()}"
+                                               var="categoria"
+                                               itemValue="#{categoria}"
+                                               itemLabel="#{categoria.categoria}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-3 ui-lg-4">
+                            <h:outputLabel for="form-habilitacao" value="Form. Habilitação" styleClass="label"/>
+                            <p:inputText id="form-habilitacao"
+                                         value="#{motoristaController.entidade.formHabilitacao}"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-8">
+                            <h:outputLabel for="endereco" value="Endereço" styleClass="label required"/>
+                            <p:inputText id="endereco" required="true"
+                                         requiredMessage="Por favor, preencha o endereço."
+                                         value="#{motoristaController.entidade.endereco}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="bairro" value="Bairro" styleClass="label required"/>
+                            <p:inputText id="bairro" maxlength="45" required="true"
+                                         requiredMessage="Por favor, preencha o bairro."
+                                         value="#{motoristaController.entidade.bairro}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="cidade" value="Cidade" styleClass="label required"/>
+                            <p:inputText id="cidade" maxlength="45" required="true"
+                                         requiredMessage="Por favor, preencha a cidade."
+                                         value="#{motoristaController.entidade.cidade}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="estado" value="Estado" styleClass="label required"/>
+                            <p:selectOneMenu id="estado"
+                                             value="#{motoristaController.entidade.estado}">
+                                <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                <f:selectItems value="#{motoristaController.estados()}"
+                                               var="estado"
+                                               itemValue="#{estado}"
+                                               itemLabel="#{estado.estado}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="cep" value="CEP" styleClass="label required"/>
+                            <p:inputMask id="cep" required="true" mask="99999-999"
+                                         requiredMessage="Por favor, preencha o cep."
+                                         value="#{motoristaController.entidade.cep}"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputLabel for="nome-pai" value="Nome do Pai" styleClass="label"/>
+                            <p:inputText id="nome-pai" maxlength="150"
+                                         value="#{motoristaController.entidade.nomePai}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputLabel for="nome-mae" value="Nome da Mãe" styleClass="label required"/>
+                            <p:inputText id="nome-mae" maxlength="150" required="true"
+                                         requiredMessage="Por favor, preencha o nome da mãe."
+                                         value="#{motoristaController.entidade.nomeMae}"/>
+                        </div>
+                    </div>
+
+                    <h:panelGroup id="div-telefones" class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <p:dataTable id="telefones"
+                                         var="telefone"
+                                         emptyMessage="Nenhum registro encontrado."
+                                         value="#{motoristaController.entidade.telefones}"
+                                         paginator="false">
+
+                                <f:facet name="header">
+                                    Telefones
+                                </f:facet>
+
+                                <p:column headerText="Tipo">
+                                    <h:outputText value="#{telefone.tipoTelefone.descricao}"/>
+                                </p:column>
+
+                                <p:column headerText="Número">
+                                    <h:outputText value="#{telefone.numero}"/>
+                                </p:column>
+
+                                <p:column headerText="Ações" styleClass="largura80px text-center">
+                                    <p:commandButton title="Excluir"
+                                                     icon="fa fa-trash"
+                                                     styleClass="action-icons red-button fluid-button"
+                                                     immediate="true"
+                                                     update="div-telefones"
+                                                     action="#{motoristaController.excluirTelefone(telefone.numero)}"/>
+                                </p:column>
+                            </p:dataTable>
+
+                            <div class="ui-inputgroup marTop10">
+                                <p:selectOneMenu id="tipo-pessoa"
+                                                 value="#{motoristaController.telefone.tipoTelefone}"
+                                                 converter="#{tipoTelefoneConverter}">
+                                    <f:selectItem itemLabel="Tipo" itemValue=""/>
+                                    <f:selectItems value="#{tipoTelefoneController.tiposTelefone}"
+                                                   var="tipoTelefone"
+                                                   itemValue="#{tipoTelefone}"
+                                                   itemLabel="#{tipoTelefone.descricao}"/>
+                                </p:selectOneMenu>
+                                <p:inputMask mask="(99) 9999-9999?9"
+                                             placeholder="Número"
+                                             value="#{motoristaController.telefone.numero}"/>
+                                <p:commandButton id="btn_adicionar_telefone"
+                                                 styleClass="blue-button"
+                                                 icon="fa fa-plus"
+                                                 update="div-telefones"
+                                                 process="div-telefones"
+                                                 iconPos="left"
+                                                 value="Adicionar"
+                                                 title="Adicionar telefone."
+                                                 actionListener="#{motoristaController.novoTelefone(motoristaController.telefone)}"/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+                    <div class="ContainerIndent text-center marTop20">
+                        <h2>Referências</h2>
+                    </div>
+
+                    <h:panelGroup id="div-referencias" class="ui-fluid ui-g">
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <p:dataTable id="referencias"
+                                         var="referencia"
+                                         emptyMessage="Nenhum registro encontrado."
+                                         value="#{motoristaController.entidade.referencias}">
+
+                                <p:column headerText="Tipo">
+                                    <h:outputText value="#{referencia.tipoReferencia}"/>
+                                </p:column>
+
+                                <p:column headerText="Nome">
+                                    <h:outputText value="#{referencia.nome}"/>
+                                </p:column>
+
+                                <p:column headerText="Telefone">
+                                    <h:outputText value="#{referencia.telefone}"/>
+                                </p:column>
+
+                                <p:column headerText="Ações" styleClass="largura80px text-center">
+                                    <p:commandButton title="Excluir"
+                                                     icon="fa fa-trash"
+                                                     styleClass="action-icons red-button fluid-button"
+                                                     immediate="true"
+                                                     update="div-referencias"
+                                                     action="#{motoristaController.excluirReferencia(referencia.nome)}"/>
+                                </p:column>
+                            </p:dataTable>
+
+
+                            <div class="ui-inputgroup marTop10">
+                                <p:selectOneMenu id="tipo-referencia"
+                                                 value="#{motoristaController.referencia.tipoReferencia}">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                    <f:selectItems value="#{motoristaController.tiposReferencia()}"
+                                                   var="tipoReferencia"
+                                                   itemValue="#{tipoReferencia}"
+                                                   itemLabel="#{tipoReferencia.tipoReferencia}"/>
+                                </p:selectOneMenu>
+
+                                <p:inputText id="nome-referencia"
+                                             placeholder="Nome"
+                                             value="#{motoristaController.referencia.nome}"/>
+
+                                <p:inputMask id="telefone-referencia"
+                                             mask="(99) 9999-9999?9"
+                                             placeholder="Número"
+                                             value="#{motoristaController.referencia.telefone}"/>
+
+                                <p:commandButton id="btn_add"
+                                                 styleClass="blue-button"
+                                                 icon="fa fa-plus"
+                                                 iconPos="left"
+                                                 value="Adicionar"
+                                                 title="Adicionar referência."
+                                                 actionListener="#{motoristaController.novaReferencia(motoristaController.referencia)}"
+                                                 update="div-referencias"
+                                                 process="div-referencias"/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+                    <div class="ContainerIndent text-center marTop20">
+                        <h2>Dados Bancários</h2>
+                    </div>
+
+                    <div class="ui-g ui-fluid">
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <h:outputLabel for="favorecido" value="Favorecido" styleClass="label required"/>
+                            <p:inputText id="favorecido" maxlength="150" required="true"
+                                         requiredMessage="Por favor, preencha o favorecido."
+                                         value="#{motoristaController.entidade.dadosBancarios.favorecido}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <h:outputLabel for="banco" value="Banco" styleClass="label required"/>
+                            <p:selectOneMenu id="banco"
+                                             value="#{motoristaController.entidade.dadosBancarios.banco}"
+                                             converter="#{bancoConverter}">
+                                <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                <f:selectItems value="#{bancoController.bancos()}"
+                                               var="banco"
+                                               itemValue="#{banco}"
+                                               itemLabel="#{banco.nome}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                            <h:outputLabel for="agencia" value="Agência" styleClass="label required"/>
+                            <p:inputText id="agencia"
+                                         required="true"
+                                         requiredMessage="Por favor, preencha a agência."
+                                         value="#{motoristaController.entidade.dadosBancarios.agencia}">
+                                <p:keyFilter mask="num"/>
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                            <h:outputLabel for="conta" value="Conta" styleClass="label required"/>
+                            <p:inputText id="conta"
+                                         maxlength="10"
+                                         required="true"
+                                         requiredMessage="Por favor, preencha a conta."
+                                         value="#{motoristaController.entidade.dadosBancarios.conta}">
+                                <p:keyFilter regEx="/[0-9-xX]/"/>
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                            <h:outputLabel for="tipo-conta" value="Tipo de Conta" styleClass="label required"/>
+                            <p:selectOneMenu id="tipo-conta"
+                                             required="true"
+                                             requiredMessage="Por favor, preencha o tipo de conta."
+                                             value="#{motoristaController.entidade.dadosBancarios.tipoConta}">
+                                <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                <f:selectItems value="#{motoristaController.tiposConta()}"
+                                               var="tipoConta"
+                                               itemValue="#{tipoConta}"
+                                               itemLabel="#{tipoConta.tipoConta}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+
+                </h:panelGroup>
+
+                <h:panelGroup id="panel-cadastro-frete" rendered="#{motoristaController.entidade.id != null}">
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-3 ui-lg-3 text-center">
+                            <p:graphicImage id="out-photo"
+                                            width="180"
+                                            height="135"
+                                            value="#{fotoController.foto != null ? fotoController.foto : 'https://via.placeholder.com/180x135'}">
+
+                                <f:param name="id" value="#{motoristaController.entidade.id}"/>
+                            </p:graphicImage>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-9 ui-lg-9">
+                            <div class="ui-fluid ui-g">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <h:outputLabel for="cpf" value="CPF do Motorista" styleClass="label"/>
+                                    <h:outputText id="cpf" value="#{motoristaController.entidade.cpf}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <h:outputLabel for="out-nome" value="Nome" styleClass="label"/>
+                                    <h:outputText id="out-nome" value="#{motoristaController.entidade.nome}"/>
+                                </div>
+                            </div>
+
+                            <div class="ui-fluid ui-g">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <h:outputLabel for="out-dt-nascimento" value="Data de Nascimento"
+                                                   styleClass="label"/>
+                                    <h:outputText id="out-dt-nascimento"
+                                                  value="#{motoristaController.entidade.dataNascimento}"
+                                                  converter="#{localDateConverter}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <div class="ContainerIndent text-center marTop20">
+                <h2>Dados do Frete</h2>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="qt-fardos" value="Quant. Fardos" styleClass="label required"/>
+                    <p:inputNumber id="qt-fardos"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha a quantidade de fardos."
+                                   value="#{motoristaController.frete.quantidadeFardos}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="cap-media" value="Capacidade Média" styleClass="label required"/>
+                    <p:inputNumber id="cap-media"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha a capacidade média."
+                                   value="#{motoristaController.frete.mediaFardos}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="valor-carga" value="Valor da Carga" styleClass="label required"/>
+                    <p:inputNumber id="valor-carga"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha o valor da carga."
+                                   value="#{motoristaController.frete.valorCarga}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="valor-frete" value="Valor do Frete" styleClass="label required"/>
+                    <p:inputNumber id="valor-frete"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha o valor do frete."
+                                   value="#{motoristaController.frete.valorFrete}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="adiantamento" value="Adiantamento" styleClass="label required"/>
+                    <p:inputNumber id="adiantamento"
+                                   minValue="0"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   rendered="true"
+                                   requiredMessage="Por favor, preencha o adiantamento. Digite 0 caso não haja adiantamento."
+                                   value="#{motoristaController.frete.adiantamento}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="saldo" value="Saldo" styleClass="label required"/>
+                    <p:inputNumber id="saldo"
+                                   minValue="0"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   rendered="true"
+                                   requiredMessage="Por favor, preencha o saldo. Digite 0 caso não haja saldo."
+                                   value="#{motoristaController.frete.saldo}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="pamcary" value="Desc. Pamcary" styleClass="label"/>
+                    <p:inputNumber id="pamcary"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   value="#{motoristaController.frete.pamcary}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="agenciador" value="Agenciador" styleClass="label required"/>
+                    <p:inputText id="agenciador" required="true"
+                                 requiredMessage="Por favor, preencha o agenciador."
+                                 value="#{motoristaController.frete.agenciador}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="capacidade-veiculo" value="Capacidade do Veículo" styleClass="label"/>
+                    <p:inputNumber id="capacidade-veiculo"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   value="#{motoristaController.frete.capacidadeVeiculo}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="placa" value="Placa" styleClass="label required"/>
+                    <p:inputText id="placa" maxlength="8" styleClass="text-uppercase" required="true"
+                                 requiredMessage="Por favor, preencha a placa do veículo."
+                                 converter="#{uppercaseConverter}"
+                                 value="#{motoristaController.frete.placa}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="km" value="Km" styleClass="label"/>
+                    <p:inputNumber id="km"
+                                   maxValue="1000000"
+                                   maxlength="5"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   value="#{motoristaController.frete.km}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-12 ui-lg-6">
+                    <h:panelGroup id="div-destinos">
+                        <p:dataTable id="destinos"
+                                     var="destino"
+                                     emptyMessage="Nenhum registro encontrado."
+                                     value="#{motoristaController.frete.destinos}">
+
+                            <f:facet name="header">Destinos</f:facet>
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{destino.nome}"/>
+                            </p:column>
+
+                            <p:column headerText="Ações" styleClass="largura80px text-center">
+                                <p:commandButton title="Excluir"
+                                                 icon="fa fa-trash"
+                                                 styleClass="action-icons red-button fluid-button"
+                                                 immediate="true"
+                                                 update="div-destinos"
+                                                 action="#{motoristaController.excluirDestino(destino.nome)}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div class="ui-inputgroup marTop10">
+                            <p:inputText id="nome-destino"
+                                         placeholder="Nome"
+                                         value="#{motoristaController.destino.nome}"/>
+
+                            <p:commandButton id="btn_add_destino"
+                                             styleClass="blue-button"
+                                             icon="fa fa-plus"
+                                             iconPos="left"
+                                             value="Adicionar"
+                                             title="Adicionar destino."
+                                             actionListener="#{motoristaController.novoDestino(motoristaController.destino)}"
+                                             update="div-destinos"
+                                             process="div-destinos"/>
+                        </div>
+                    </h:panelGroup>
+                </div>
+                <div class="ui-g-12 ui-md-12 ui-lg-6">
+                    <h:panelGroup id="div-cidades">
+
+                        <p:dataTable id="cidades"
+                                     var="cidade"
+                                     emptyMessage="Nenhum registro encontrado."
+                                     value="#{motoristaController.frete.cidades}">
+
+                            <f:facet name="header">Cidades</f:facet>
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{cidade.nome}"/>
+                            </p:column>
+
+                            <p:column headerText="Ações" styleClass="largura80px text-center">
+                                <p:commandButton title="Excluir"
+                                                 icon="fa fa-trash"
+                                                 styleClass="action-icons red-button fluid-button"
+                                                 immediate="true"
+                                                 update="div-cidades"
+                                                 action="#{motoristaController.excluirCidade(cidade.nome)}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div class="ui-inputgroup marTop10">
+                            <p:inputText id="nome-cidade"
+                                         placeholder="Nome"
+                                         value="#{motoristaController.cidade.nome}"/>
+
+                            <p:commandButton id="btn_add_cidade"
+                                             styleClass="blue-button"
+                                             icon="fa fa-plus"
+                                             iconPos="left"
+                                             value="Adicionar"
+                                             title="Adicionar cidade."
+                                             actionListener="#{motoristaController.novaCidade(motoristaController.cidade)}"
+                                             update="div-cidades"
+                                             process="div-cidades"/>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                    <h:outputLabel for="observacao" value="Observação" styleClass="label"/>
+                    <p:inputText id="observacao"
+                                 maxlength="500"
+                                 value="#{motoristaController.frete.observacao}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_cancelar"
+                                 action="#{motoristaController.urlProvider.getUrlIndexFrete()}"
+                                 styleClass="red-button form-button Fleft"
+                                 immediate="true"
+                                 icon="fa fa-close"
+                                 iconPos="left"
+                                 value="Cancelar"
+                                 title="Cancelar"/>
+
+                <p:commandButton id="btn_salvar"
+                                 action="#{motoristaController.salvarFrete()}"
+                                 styleClass="green-button form-button Fright"
+                                 icon="fa fa-save"
+                                 iconPos="left"
+                                 value="Salvar"
+                                 title="Salvar"/>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+        </h:form>
+
+        <p:dialog modal="true"
+                  header="Selecionar foto"
+                  responsive="true"
+                  widgetVar="dlg-upload">
+
+            Proporção ideal: 4:3 (640x480 ou 320x240)<br/>
+            Tamanho máximo permitido do arquivo: 200kb<br/>
+            Extensões permitidas: jpeg ou png
+
+            <h:form prependId="false" styleClass="marTop10">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                <p:fileUpload mode="advanced"
+                              widgetVar="fileUpload"
+                              multiple="false"
+                              fileLimit="1"
+                              fileLimitMessage="Apenas um arquivo pode ser selecionado. Atualize a página ou salve a foto já existente."
+                              oncomplete="PF('dlg-upload').hide();"
+                              label="Escolher"
+                              uploadLabel="Confirmar"
+                              cancelLabel="Cancelar"
+                              allowTypes="/(\.|\/)(jpe?g|png)$/"
+                              invalidFileMessage="Arquivo inválido."
+                              sizeLimit="204800"
+                              invalidSizeMessage="O tamanho máximo permitido é 200kb."
+                              fileUploadListener="#{motoristaController.confirmarFoto}" update="foto"/>
+            </h:form>
+        </p:dialog>
+    </div>
+
+</ui:composition>

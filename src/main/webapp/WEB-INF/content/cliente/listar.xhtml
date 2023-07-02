@@ -1,0 +1,85 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1>Clientes</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="clientes"
+                             var="cliente"
+                             value="#{clienteController.clientes}"
+                             emptyMessage="Nenhum registro encontrado."
+                             rowsPerPageTemplate="5, 10, 25, 50, 100"
+                             reflow="true"
+                             paginator="true" rows="10">
+                    <f:facet name="header">
+                        Lista de Clientes
+                    </f:facet>
+
+                    <p:column headerText="Cód."
+                              sortBy="#{cliente.id}"
+                              filterBy="#{cliente.id}">
+                        <h:outputText value="${cliente.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome" sortBy="#{cliente.nome}"
+                              filterBy="#{cliente.nome}"
+                              styleClass="nome-cliente">
+                        <h:outputText value="#{cliente.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="CNPJ" styleClass="largura120px">
+                        <h:outputText value="#{cliente.cpfCnpj}"/>
+                    </p:column>
+
+                    <p:column headerText="Cidade">
+                        <h:outputText value="#{cliente.cidade}"/>
+                    </p:column>
+
+                    <p:column headerText="Situação">
+                        <h:outputText value="#{cliente.situacao}"/>
+                    </p:column>
+
+                    <p:column headerText="Última Venda">
+                        <h:outputText value="#{cliente.dataUltimaVenda}" converter="#{localDateConverter}"/>
+                    </p:column>
+
+                    <p:column headerText="Ações" styleClass="text-center" exportable="false">
+                        <p:commandButton title="Detalhar"
+                                         icon="fa fa-info"
+                                         styleClass="action-icons blue-button"
+                                         ajax="false"
+                                         action="#{clienteController.urlProvider.getUrlDetalharCliente(cliente.id)}"/>
+
+                        <p:commandButton title="Fazer pedido"
+                                         disabled="#{cliente.situacao.equalsIgnoreCase('Bloqueado')}"
+                                         icon="fa fa-cart-plus"
+                                         styleClass="action-icons green-button"
+                                         ajax="false"
+                                         action="#{clienteController.urlProvider.getUrlIndexNovoPedidoCliente(cliente.id)}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <h3>Exportar dados da tabela</h3>
+                <h:commandLink>
+                    <p:graphicImage name="/img/xls.png" />
+                    <p:dataExporter type="xlsx" target="clientes" fileName="clientes"/>
+                </h:commandLink>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

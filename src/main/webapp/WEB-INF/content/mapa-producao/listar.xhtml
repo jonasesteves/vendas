@@ -1,0 +1,109 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui">
+
+
+    <div class="card">
+        <h1>Mapa de Produção</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="dt-inicial" value="Data Inicial" styleClass="label"/>
+                    <p:calendar id="dt-inicial"
+                                locale="pt_BR"
+                                mask="true"
+                                pattern="dd/MM/yyyy"
+                                mindate="01/01/2012"
+                                maxdate="today"
+                                required="true"
+                                requiredMessage="Por favor, preencha a data inicial."
+                                converter="#{localDateConverter}"
+                                value="#{mapaProducaoController.dataInicial}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="dt-final" value="Data Final" styleClass="label"/>
+                    <p:calendar id="dt-final"
+                                locale="pt_BR"
+                                mask="true"
+                                pattern="dd/MM/yyyy"
+                                maxdate="today"
+                                required="true"
+                                requiredMessage="Por favor, preencha a data final."
+                                converter="#{localDateConverter}"
+                                value="#{mapaProducaoController.dataFinal}" />
+                </div>
+            </div>
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_limpar"
+                                 styleClass="black-button Fleft"
+                                 ajax="true"
+                                 update="dt-inicial dt-final mapas-producao"
+                                 process="@this"
+                                 icon="fa fa-eraser"
+                                 iconPos="left"
+                                 value="Limpar"
+                                 title="Limpar item"
+                                 actionListener="#{mapaProducaoController.limpar()}"
+                                 immediate="true">
+                </p:commandButton>
+
+                <p:commandButton id="btn_buscar"
+                                 styleClass="aqua-button Fright"
+                                 icon="fa fa-search" iconPos="left" value="Buscar"
+                                 title="Buscar mapas de produção"
+                                 ajax="true"
+                                 update="mapas-producao"
+                                 actionListener="#{mapaProducaoController.buscaMapasProducao()}">
+                </p:commandButton>
+                <span style="clear: left; display: block;"></span>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="mapas-producao"
+                             var="mapaProducao"
+                             value="#{mapaProducaoController.mapasProducao}"
+                             emptyMessage="Nenhum registro encontrado."
+                             sortMode="multiple"
+                             rowsPerPageTemplate="5, 10, 25, 50, 100"
+                             reflow="true"
+                             lazy="true"
+                             paginator="true" rows="5">
+
+                    <p:column headerText="Data">
+                        <h:outputText value="#{mapaProducao.data}" converter="#{localDateConverter}"/>
+                    </p:column>
+
+                    <p:column headerText="Objeto">
+                        <h:outputText value="#{mapaProducao.objeto}"/>
+                    </p:column>
+
+                    <p:column headerText="Quantidade">
+                        <h:outputText value="#{mapaProducao.quantidade}"/>
+                    </p:column>
+
+                    <p:column headerText="Unidade">
+                        <h:outputText value="#{mapaProducao.unidade}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <h3>Exportar dados da tabela</h3>
+                <h:commandLink>
+                    <p:graphicImage name="/img/xls.png" />
+                    <p:dataExporter type="xlsx" target="mapas-producao" fileName="mapa-producao"/>
+                </h:commandLink>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link rel="icon" type="image/png" href="http://www.incopa.com.br/favicon.png"/>
+    </f:facet>
+    <title>Incopa - Vendas</title>
+</h:head>
+
+<h:body styleClass="login-body">
+
+    <div id="login-wrapper">
+        <p:graphicImage name="login-logo.png" library="img"/>
+
+        <div id="login-container">
+            <span class="title">Vendas</span>
+
+            <div class="ui-g ui-fluid">
+                <h:form id="f" prependId="false" >
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                    <div class="ui-g-12">
+                        <p:inputText id="username"
+                                     name="username"
+                                     placeholder="email@email.com"
+                                     required="true"
+                                     requiredMessage="Preencha o e-mail"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:password id="password"
+                                    name="password"
+                                    placeholder="Senha"
+                                    feedback="false"
+                                    required="true"
+                                    requiredMessage="Preencha a senha"/>
+                    </div>
+
+                    <div class="ui-g-12">
+                        <h:outputText value="Login inválido" styleClass="login-invalido"
+                                      rendered="#{param['login'] == false ? true : false}" />
+                    </div>
+
+                    <div class="ui-g-12">
+                        <p:commandButton value="Login"
+                                         icon="fa fa-check"
+                                         ajax="false"
+                                         action="/vendas/login.xhtml"
+                                         update="growl"/>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+        <div class="login-footer">INCOPA - Indústria e Comércio de Papéis LTDA</div>
+    </div>
+
+    <h:outputStylesheet name="css/layout.css" library="omega-layout"/>
+    <h:outputStylesheet name="css/custom.css" library="omega-layout"/>
+</h:body>
+
+</html>

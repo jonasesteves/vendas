@@ -1,0 +1,174 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1><ui:insert name="tituloCard"/></h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3 text-center">
+                    <p:graphicImage id="photo"
+                                    width="180"
+                                    height="135"
+                                    value="#{freteController.foto != null ? freteController.foto : 'https://via.placeholder.com/180x135'}">
+
+                        <f:param id="idd" name="idd" value="#{freteController.entidade.motorista.id}"/>
+                    </p:graphicImage>
+                </div>
+
+                <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="cpf" value="CPF do Motorista" styleClass="label"/>
+                            <h:outputText id="cpf" value="#{freteController.entidade.motorista.cpf}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-8">
+                            <h:outputLabel for="nome" value="Nome" styleClass="label"/>
+                            <h:outputText id="nome" value="#{freteController.entidade.motorista.nome}"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="dt-nascimento" value="Data de Nascimento" styleClass="label"/>
+                            <h:outputText id="dt-nascimento"
+                                          value="#{freteController.entidade.motorista.dataNascimento}"
+                                          converter="#{localDateConverter}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="data" value="Data" styleClass="label"/>
+                    <h:outputText id="data" converter="#{localDateConverter}" value="#{freteController.entidade.data}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="qt-fardos" value="Quant. Fardos" styleClass="label"/>
+                    <h:outputText id="qt-fardos" value="#{freteController.entidade.quantidadeFardos}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="cap-media" value="Capacidade Média" styleClass="label"/>
+                    <h:outputText id="cap-media" value="#{freteController.entidade.mediaFardos}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="valor-carga" value="Valor da Carga" styleClass="label"/>
+                    <h:outputText id="valor-carga" value="#{freteController.entidade.valorCarga}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="valor-frete" value="Valor do Frete" styleClass="label"/>
+                    <h:outputText id="valor-frete" value="#{freteController.entidade.valorFrete}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="adiantamento" value="Adiantamento" styleClass="label"/>
+                    <h:outputText id="adiantamento" value="#{freteController.entidade.adiantamento}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="saldo" value="Saldo" styleClass="label"/>
+                    <h:outputText id="saldo" value="#{freteController.entidade.saldo}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="pamcary" value="Desc. Pamcary" styleClass="label"/>
+                    <h:outputText id="pamcary" value="#{freteController.entidade.pamcary}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="agenciador" value="Agenciador" styleClass="label"/>
+                    <h:outputText id="agenciador" value="#{freteController.entidade.agenciador}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="capacidade-veiculo" value="Capacidade do Veículo" styleClass="label"/>
+                    <h:outputText id="capacidade-veiculo" value="#{freteController.entidade.capacidadeVeiculo}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="placa" value="Placa" styleClass="label"/>
+                    <h:outputText id="placa" value="#{freteController.entidade.placa}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <h:outputLabel for="km" value="Km" styleClass="label"/>
+                    <h:outputText id="km" value="#{freteController.entidade.km}"/>
+                </div>
+            </div>
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-12 ui-lg-6">
+                    <h:panelGroup id="div-destinos">
+                        <p:dataTable id="destinos"
+                                     var="destino"
+                                     emptyMessage="Nenhum registro encontrado."
+                                     value="#{freteController.entidade.destinos}">
+
+                            <f:facet name="header">Destinos</f:facet>
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{destino.nome}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
+                </div>
+
+                <div class="ui-g-12 ui-md-12 ui-lg-6">
+                    <h:panelGroup id="div-cidades">
+                        <p:dataTable id="cidades"
+                                     var="cidade"
+                                     emptyMessage="Nenhum registro encontrado."
+                                     value="#{freteController.entidade.cidades}">
+
+                            <f:facet name="header">Cidades</f:facet>
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{cidade.nome}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                    <h:outputLabel for="observacao" value="Observação" styleClass="label"/>
+                    <h:outputText id="observacao" value="#{freteController.entidade.observacao}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_voltar"
+                                 action="#{freteController.urlProvider.getUrlIndexFrete()}"
+                                 styleClass="blue-button form-button Fleft"
+                                 immediate="true"
+                                 icon="fa fa-arrow-left"
+                                 iconPos="left"
+                                 value="Voltar"
+                                 title="Voltar"/>
+
+                <p:commandButton id="btn_editar"
+                                 action="#{freteController.urlProvider.getUrlEditarFrete(freteController.entidade.id)}"
+                                 styleClass="orange-button form-button Fright"
+                                 icon="fa fa-edit"
+                                 iconPos="left"
+                                 value="Editar"
+                                 title="Editar"/>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

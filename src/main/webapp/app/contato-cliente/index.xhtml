@@ -1,0 +1,15 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template/template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <f:metadata>
+        <f:event listener="#{contatoClienteController.load(param['ve'], param['nf'], param['dt'], param['cl'])}" type="preRenderView"/>
+    </f:metadata>
+
+    <ui:define name="title">Contato com Cliente</ui:define>
+    <ui:define name="content">
+        <ui:include src="/WEB-INF/content/contato-cliente/listar.xhtml"/>
+    </ui:define>
+
+</ui:composition>

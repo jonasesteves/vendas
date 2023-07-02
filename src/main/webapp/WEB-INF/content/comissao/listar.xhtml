@@ -1,0 +1,133 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1>Comissões</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <h:panelGroup id="grupo-parametros">
+                <h:panelGroup id="grupo-representante" rendered="#{usuarioLogadoController.admin}">
+                    <div class="ui-g ui-fluid">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputLabel for="representante" value="Representante" styleClass="label"/>
+                            <p:selectOneMenu id="representante" value="#{comissaoController.usuario}"
+                                             converter="#{usuarioConverter}"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione um Representante.">
+                                <f:selectItem itemLabel="Selecione um Representante" itemValue=""/>
+                                <f:selectItems value="#{usuarioController.representantes}"
+                                               var="usuario"
+                                               itemValue="#{usuario}"
+                                               itemLabel="#{usuario.nome}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                </h:panelGroup>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="dt-inicial" value="Data Inicial" styleClass="label"/>
+                        <p:calendar id="dt-inicial"
+                                    locale="pt_BR"
+                                    mask="true"
+                                    pattern="dd/MM/yyyy"
+                                    mindate="01/01/2012"
+                                    maxdate="today"
+                                    required="true"
+                                    requiredMessage="Por favor, preencha a data inicial."
+                                    converter="#{localDateConverter}"
+                                    value="#{comissaoController.dataInicial}"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="dt-final" value="Data Final" styleClass="label"/>
+                        <p:calendar id="dt-final"
+                                    locale="pt_BR"
+                                    mask="true"
+                                    pattern="dd/MM/yyyy"
+                                    maxdate="today"
+                                    required="true"
+                                    requiredMessage="Por favor, preencha a data final."
+                                    converter="#{localDateConverter}"
+                                    value="#{comissaoController.dataFinal}"/>
+                    </div>
+                </div>
+            </h:panelGroup>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_limpar"
+                                 styleClass="black-button Fleft"
+                                 ajax="true"
+                                 update="grupo-parametros comissoes"
+                                 process="@this"
+                                 icon="fa fa-eraser"
+                                 iconPos="left"
+                                 value="Limpar"
+                                 title="Limpar item"
+                                 actionListener="#{comissaoController.limpar()}"
+                                 immediate="true">
+                </p:commandButton>
+
+                <p:commandButton id="btn_buscar"
+                                 styleClass="aqua-button Fright"
+                                 icon="fa fa-search" iconPos="left" value="Buscar"
+                                 title="Buscar comissões"
+                                 ajax="true"
+                                 update="comissoes"
+                                 actionListener="#{comissaoController.buscaComissoes()}">
+                </p:commandButton>
+                <span style="clear: left; display: block;"></span>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="comissoes"
+                             var="comissao"
+                             value="#{comissaoController.comissoes}"
+                             emptyMessage="Nenhum registro encontrado."
+                             sortMode="multiple"
+                             rowsPerPageTemplate="5, 10, 25, 50, 100"
+                             reflow="true"
+                             lazy="true"
+                             paginator="true" rows="5">
+                    <f:facet name="header">
+                        Comissões do Representante #{comissaoController.usuario.nome}
+                    </f:facet>
+
+                    <p:column headerText="Data">
+                        <h:outputText value="#{comissao.data}" converter="#{localDateConverter}"/>
+                    </p:column>
+
+                    <p:column headerText="NF">
+                        <h:outputText value="${comissao.notaFiscal}"/>
+                    </p:column>
+
+                    <p:column headerText="Motivo">
+                        <h:outputText value="#{comissao.observacao}"/>
+                    </p:column>
+
+                    <p:column headerText="Valor" styleClass="text-right">
+                        <h:outputText value="#{comissao.valor}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <h3>Exportar dados da tabela</h3>
+                <h:commandLink>
+                    <p:graphicImage name="/img/xls.png" />
+                    <p:dataExporter type="xlsx" target="comissoes" fileName="comissoes"/>
+                </h:commandLink>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

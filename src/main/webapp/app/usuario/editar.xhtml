@@ -1,0 +1,17 @@
+<ui:composition template="/WEB-INF/template/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!-- Buscar a classe passada por parametro -->
+    <f:metadata>
+        <f:event listener="#{usuarioController.load(param['id'])}" type="preRenderView"/>
+    </f:metadata>
+
+    <ui:define name="title">Usuário</ui:define>
+    <ui:define name="content">
+        <!-- Incluir o arquivo com o nucleo do form -->
+        <ui:include src="/WEB-INF/content/usuario/form.xhtml"/>
+    </ui:define>
+
+</ui:composition>

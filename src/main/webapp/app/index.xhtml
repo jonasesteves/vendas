@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/template.xhtml">
+
+    <ui:define name="content">
+
+        <h:form id="f" prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="false" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false"/>
+            </p:growl>
+        </h:form>
+
+        <div class="card">
+            <h1>Ajuda</h1>
+            <p>
+                Sistema desenvolvido para realização de vendas e gerenciamento de pedidos da INCOPA.<br/>
+                Se precisar de ajuda, acesse o manual clicando no botão abaixo ou no interrogação,
+                no canto superior direito de qualquer página.
+            </p>
+            <p:button outcome="index" target="_blank"
+                      href="#{usuarioLogadoController.representante ? '/resources/files/manual_representante.pdf' : '/resources/files/manual_adm.pdf'}"
+                      icon="fa fa-book" iconPos="left"
+                      value="Manual" style="display:inline-block;margin-top:5px"/>
+        </div>
+
+        <h:panelGroup id="card-videos" rendered="#{usuarioLogadoController.representante}">
+            <div class="card">
+                <h1>Vídeos Explicativos</h1>
+
+                <p>Também estão disponíveis alguns vídeos para ajudar na realização de alguns procedimentos.</p>
+
+                <div class="ui-fluid ui-g">
+                    <div class="ui-g-12 ui-md-12 ui-lg-6 text-center">
+                        <iframe class="center-block margin_top_2em video-mobile"
+                                src="https://www.youtube.com/embed/kBDfAC1Siaw"
+                                frameborder="0" allowfullscreen="true">
+                        </iframe>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-12 ui-lg-6 text-center">
+                        <iframe class="center-block margin_top_2em video-mobile"
+                                src="https://www.youtube.com/embed/kBDfAC1Siaw"
+                                frameborder="0" allowfullscreen="true">
+
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>

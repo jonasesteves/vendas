@@ -1,0 +1,409 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="card">
+        <h1>Novo Pedido</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <h:panelGroup id="panel-busca-cliente">
+                <h:panelGroup rendered="#{novoPedidoController.exibeCampoBuscarCliente}">
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputLabel for="cliente" value="Cliente" styleClass="label"/>
+                            <p:autoComplete id="cliente"
+                                            value="#{novoPedidoController.cliente}"
+                                            completeMethod="#{novoPedidoController.listarClientes}"
+                                            var="cliente"
+                                            converter="#{clienteConverter}"
+                                            itemLabel="#{((cliente.id.toString()).concat(' - ')).concat(cliente.nome)}"
+                                            itemValue="#{cliente}"
+                                            forceSelection="true"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-g ContainerIndent">
+                        <p:commandButton id="btn_buscar"
+                                         styleClass="green-button form-button Fright"
+                                         icon="fa fa-search" iconPos="left" value="Buscar"
+                                         title="Buscar cliente"
+                                         update="panel-pedido panel-busca-cliente"
+                                         ajax="true"
+                                         actionListener="#{novoPedidoController.iniciarPedido()}"/>
+
+                        <span style="clear: left; display: block;"></span>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:form>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <p:growl life="10000" escape="false" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <h:panelGroup id="panel-pedido">
+                <h:panelGroup rendered="#{novoPedidoController.exibePainelPedido}">
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputLabel for="cliente-pedido" value="Cliente" styleClass="label"/>
+                            <p:inputText id="cliente-pedido" value="#{novoPedidoController.pedido.cliente.nome}"
+                                         readonly="true"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="empresa" value="Empresa" styleClass="label"/>
+                            <p:selectOneMenu id="empresa"
+                                             value="#{novoPedidoController.pedido.empresa}"
+                                             converter="#{empresaConverter}"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione uma Empresa">
+                                <f:selectItem itemLabel="Selecione uma Empresa" itemValue=""/>
+                                <f:selectItems value="#{novoPedidoController.empresas}"
+                                               var="empresa"
+                                               itemValue="#{empresa}"
+                                               itemLabel="#{empresa.nome}"/>
+
+                                <p:ajax event="change"
+                                        update="tipo-pedido ag-cobrador tipo-cobranca forma-pgto"
+                                        listener="#{novoPedidoController.limparCamposPagamento()}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="tipo-pedido" value="Tipo de Pedido" styleClass="label"/>
+                            <p:selectOneMenu id="tipo-pedido" value="#{novoPedidoController.pedido.idOperacao}"
+                                             disabled="#{novoPedidoController.bloqueiaTipoPedido}"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione um Tipo de Pedido.">
+                                <f:selectItem itemLabel="Selecione um Tipo de Pedido" itemValue=""/>
+                                <f:selectItem itemLabel="Venda" itemValue="97"/>
+                                <f:selectItem itemLabel="Bonificação" itemValue="133"/>
+
+                                <p:ajax event="change"
+                                        update="tipo-bonificacao ag-cobrador tipo-cobranca forma-pgto id-item"
+                                        listener="#{novoPedidoController.vendaBonificacao()}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="tipo-bonificacao" value="Tipo de Bonificação"
+                                           styleClass="label"/>
+                            <p:selectOneMenu id="tipo-bonificacao"
+                                             value="#{novoPedidoController.pedido.tipoBonificacao}"
+                                             converter="#{tipoBonificacaoConverter}"
+                                             disabled="#{novoPedidoController.venda}"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione um Tipo de Bonificação">
+                                <f:selectItem itemLabel="Selecione um Tipo de Bonificação" itemValue=""/>
+                                <f:selectItems value="#{novoPedidoController.tiposBonificacao}"
+                                               var="tipoBonificacao"
+                                               itemValue="#{tipoBonificacao}"
+                                               itemLabel="#{tipoBonificacao.descricao}"/>
+                                <p:ajax event="change"
+                                        update="novo-item"
+                                        listener="#{novoPedidoController.liberarAddItem()}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="ag-cobrador" value="Agente Cobrador"
+                                           styleClass="label"/>
+                            <p:selectOneMenu id="ag-cobrador"
+                                             value="#{novoPedidoController.pedido.agenteCobrador}"
+                                             converter="#{agenteCobradorConverter}"
+                                             disabled="#{novoPedidoController.bonificacao}"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione um Agente Cobrador">
+                                <f:selectItem itemLabel="Selecione um Agente Cobrador" itemValue=""/>
+                                <f:selectItems value="#{novoPedidoController.agentesCobradores}"
+                                               var="agentesCobradores"
+                                               itemValue="#{agentesCobradores}"
+                                               itemLabel="#{agentesCobradores.descricao}"/>
+                                <p:ajax event="change"
+                                        update="tipo-cobranca"
+                                        listener="#{novoPedidoController.buscaTiposCobranca()}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="tipo-cobranca" value="Tipo de Cobrança"
+                                           styleClass="label"/>
+                            <p:selectOneMenu id="tipo-cobranca"
+                                             value="#{novoPedidoController.pedido.tipoCobranca}"
+                                             converter="#{tipoCobrancaConverter}"
+                                             disabled="#{novoPedidoController.bonificacao}"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione um Tipo de Cobrança">
+                                <f:selectItem itemLabel="Selecione um Tipo de Cobrança" itemValue=""/>
+                                <f:selectItems value="#{novoPedidoController.tiposCobranca}"
+                                               var="tipoCobranca"
+                                               itemValue="#{tipoCobranca}"
+                                               itemLabel="#{tipoCobranca.descricao}"/>
+                                <p:ajax event="change"
+                                        update="forma-pgto"
+                                        listener="#{novoPedidoController.buscaFormasPagamento()}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="forma-pgto" value="Forma de Pagamento"
+                                           styleClass="label"/>
+                            <p:selectOneMenu id="forma-pgto"
+                                             value="#{novoPedidoController.pedido.formaPagamento}"
+                                             converter="#{formaPagamentoConverter}"
+                                             disabled="#{novoPedidoController.bonificacao}"
+                                             required="true"
+                                             requiredMessage="Por favor, selecione uma Forma de Pagamento">
+                                <f:selectItem itemLabel="Selecione uma Forma de Pagamento" itemValue=""/>
+                                <f:selectItems value="#{novoPedidoController.formasPagamento}"
+                                               var="formaPagamento"
+                                               itemValue="#{formaPagamento}"
+                                               itemLabel="#{formaPagamento.descricao}"/>
+                                <p:ajax event="change"
+                                        update="novo-item"
+                                        listener="#{novoPedidoController.liberarAddItem()}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <h:panelGroup id="grupo-itens">
+                        <div class="ContainerIndent">
+                            <p:fieldset id="novo-item"
+                                        toggleable="#{novoPedidoController.liberarNovoItem}"
+                                        legend="Novo Item"
+                                        toggleSpeed="500"
+                                        collapsed="true">
+
+                                <div class="ui-fluid ui-g">
+                                    <div class="ui-g-12 ui-md-3 ui-lg-1">
+                                        <h:outputLabel for="id-item" value="Cód." styleClass="label"/>
+                                        <p:autoComplete id="id-item"
+                                                        value="#{novoPedidoController.item.idEstoque}"
+                                                        completeMethod="#{novoPedidoController.listarItensId}">
+                                            <p:ajax event="itemSelect"
+                                                    update="id-item nome-item quantidade vlr-unit vlr-venda desc vlr-total"
+                                                    listener="#{novoPedidoController.completaCampos}"/>
+                                        </p:autoComplete>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <h:outputLabel for="nome-item" value="Descrição" styleClass="label"/>
+                                        <p:autoComplete id="nome-item"
+                                                        value="#{novoPedidoController.item.nome}"
+                                                        completeMethod="#{novoPedidoController.listarItensNome}">
+                                            <p:ajax event="itemSelect"
+                                                    update="id-item nome-item quantidade vlr-unit vlr-venda desc vlr-total"
+                                                    listener="#{novoPedidoController.completaCampos}"/>
+                                        </p:autoComplete>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3 ui-lg-1">
+                                        <h:outputLabel for="quantidade" value="Quant." styleClass="label"/>
+                                        <p:inputNumber id="quantidade"
+                                                       thousandSeparator="" decimalPlaces="0"
+                                                       value="#{novoPedidoController.item.quantidade}">
+                                            <p:ajax event="change"
+                                                    update="desc vlr-total"
+                                                    listener="#{novoPedidoController.calculaValores()}"/>
+                                        </p:inputNumber>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3 ui-lg-1">
+                                        <h:outputLabel for="vlr-unit" value="V. Unit." styleClass="label"/>
+                                        <p:inputNumber id="vlr-unit"
+                                                       readonly="true"
+                                                       thousandSeparator="" decimalPlaces="2"
+                                                       value="#{novoPedidoController.item.valorTabelado}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3 ui-lg-1">
+                                        <h:outputLabel for="vlr-venda" value="V. Venda" styleClass="label"/>
+                                        <p:inputNumber id="vlr-venda" styleClass="teste"
+                                                       decimalPlaces="2"
+                                                       value="#{novoPedidoController.item.valorUnitario}">
+                                            <p:ajax event="change"
+                                                    update="desc vlr-total"
+                                                    listener="#{novoPedidoController.calculaValores()}"/>
+                                        </p:inputNumber>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3 ui-lg-1">
+                                        <h:outputLabel for="desc" value="Desc.(%)" styleClass="label"/>
+                                        <p:inputNumber id="desc"
+                                                       readonly="true"
+                                                       thousandSeparator=""
+                                                       decimalPlaces="2"
+                                                       value="#{novoPedidoController.item.desconto}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3 ui-lg-1">
+                                        <h:outputLabel for="vlr-total" value="V. Total" styleClass="label"/>
+                                        <p:inputNumber id="vlr-total"
+                                                       readonly="true"
+                                                       thousandSeparator="."
+                                                       decimalSeparator=","
+                                                       decimalPlaces="2"
+                                                       value="#{novoPedidoController.item.valorTotal}"/>
+                                    </div>
+                                </div>
+                                <div class="ContainerIndent">
+                                    <p:commandButton id="btn_limpar"
+                                                     styleClass="black-button Fleft"
+                                                     ajax="true"
+                                                     update="grupo-itens"
+                                                     process="@this"
+                                                     icon="fa fa-eraser"
+                                                     iconPos="left"
+                                                     value="Limpar"
+                                                     title="Limpar item"
+                                                     actionListener="#{novoPedidoController.limparItem()}"
+                                                     immediate="true">
+                                    </p:commandButton>
+
+                                    <p:commandButton id="btn_adicionar"
+                                                     styleClass="aqua-button Fright"
+                                                     icon="fa fa-plus" iconPos="left" value="Adicionar"
+                                                     title="Adicionar item"
+                                                     ajax="true"
+                                                     update="grupo-itens"
+                                                     actionListener="#{novoPedidoController.adicionarItem()}">
+                                    </p:commandButton>
+                                    <span style="clear: left; display: block;"></span>
+                                </div>
+                            </p:fieldset>
+                        </div>
+
+                        <div class="ContainerIndent">
+                            <p:dataTable var="item" value="#{novoPedidoController.pedido.itens}"
+                                         emptyMessage="Nenhum registro encontrado."
+                                         sortMode="multiple" styleClass="marTop20"
+                                         reflow="true">
+                                <f:facet name="header">
+                                    Itens do Pedido
+                                </f:facet>
+                                <p:column headerText="Cód.">
+                                    <h:outputText value="#{item.idEstoque}"/>
+                                </p:column>
+
+                                <p:column headerText="Descrição" styleClass="desc-item">
+                                    <h:outputText value="#{item.nome}"/>
+                                </p:column>
+
+                                <p:column headerText="Quant.">
+                                    <h:outputText value="#{item.quantidade}" styleClass="Fright"/>
+                                </p:column>
+
+                                <p:column headerText="Vlr. Unit.">
+                                    <h:outputText value="#{item.valorTabelado}" styleClass="Fright">
+                                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Vlr. Venda.">
+                                    <h:outputText value="#{item.valorUnitario}" styleClass="Fright">
+                                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Desc. (%)">
+                                    <h:outputText value="#{item.desconto}" styleClass="Fright">
+                                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Vlr. Total.">
+                                    <h:outputText value="#{item.valorTotal}" styleClass="Fright">
+                                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Ações" styleClass="text-center">
+                                    <p:commandButton title="Remover item"
+                                                     icon="fa fa-trash-o"
+                                                     styleClass="action-icons red-button"
+                                                     ajax="true"
+                                                     process="@this"
+                                                     immediate="true"
+                                                     update="grupo-itens"
+                                                     action="#{novoPedidoController.removerItem(item.idEstoque)}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+
+                        <div class="ui-fluid ui-g">
+                            <div class="ui-g-12 ui-md-3 ui-lg-3">
+                                <h:outputLabel for="desc-medio" value="Desconto Médio" styleClass="label"/>
+                                <p:inputNumber id="desc-medio"
+                                               thousandSeparator=""
+                                               decimalPlaces="2"
+                                               value="#{novoPedidoController.pedido.descontoMedio}"
+                                               readonly="true"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-3">
+                                <h:outputLabel for="vlr-total-pedido" value="Valor Total" styleClass="label"/>
+                                <p:inputText id="vlr-total-pedido"
+                                             value="#{novoPedidoController.pedido.valorTotal}"
+                                             readonly="true">
+                                    <f:convertNumber minFractionDigits="2"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-fluid ui-g">
+                            <div class="ui-g-12 ui-md-12 ui-lg-12">
+                                <h:outputLabel for="obs-pedido" value="Observações" styleClass="label"/>
+                                <p:inputText id="obs-pedido" maxlength="200" value="#{novoPedidoController.pedido.observacao}"/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                    <div class="ContainerIndent">
+                        <p:commandButton id="btn_cancelar"
+                                         action="#{novoPedidoController.cancelar()}"
+                                         styleClass="red-button form-button Fleft"
+                                         immediate="true"
+                                         icon="fa fa-close"
+                                         iconPos="left"
+                                         value="Cancelar"
+                                         title="Cancelar pedido">
+                            <p:confirm header="Confirmação" message="Deseja realmente cancelar o pedido?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+
+                        <p:commandButton id="btn_enviar"
+                                         action="#{novoPedidoController.salvar()}"
+                                         styleClass="green-button form-button Fright"
+                                         icon="fa fa-check" iconPos="left"
+                                         value="Enviar"
+                                         title="Enviar pedido">
+                            <p:confirm header="Confirmação" message="Deseja realmente enviar o pedido?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+
+
+                        <span style="clear: left; display: block;"></span>
+                    </div>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton id="nao" value="Não" type="button"
+                                         styleClass="ui-confirmdialog-no red-button"
+                                         icon="ui-icon-close"/>
+                        <p:commandButton id="sim" value="Sim" type="button"
+                                         styleClass="green-button ui-confirmdialog-yes"
+                                         icon="ui-icon-check"/>
+                    </p:confirmDialog>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </h:form>
+    </div>
+</ui:composition>

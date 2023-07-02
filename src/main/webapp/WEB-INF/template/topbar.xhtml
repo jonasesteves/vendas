@@ -1,0 +1,53 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <h:form prependId="false">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+        <div class="topbar clearfix">
+            <a id="omega-menu-button" href="#">
+                <span class="fa fa-bars"></span>
+            </a>
+
+            <span class="topbar-title"><ui:insert name="title"></ui:insert></span>
+
+            <a id="options-menu-button" href="#">
+                <span class="fa fa-ellipsis-h"></span>
+            </a>
+
+
+            <h:panelGroup id="icones-topbar">
+                <div id="topbar-icons" class="animated">
+                    <h:panelGroup id="ico-interno" rendered="#{usuarioLogadoController.admin || usuarioLogadoController.comercial}">
+                        <a href="/app/pedido-pendente/index.xhtml">
+                            <span class="topbar-item-text">Pedidos Pendentes</span>
+                            <span class="topbar-icon fa fa-file-text-o animated swing" title="Pedidos Pendentes"></span>
+                            <h:panelGroup id="qt-pedidos-pendentes" rendered="#{pedidoPendenteController.totalPedidosPendentes > 0}">
+                                <span class="topbar-badge animated rubberBand">#{pedidoPendenteController.totalPedidosPendentes}</span>
+                            </h:panelGroup>
+                        </a>
+                    </h:panelGroup>
+                    <a href="/app/usuario/editar-conta.xhtml">
+                        <span class="topbar-item-text">Editar Senha</span>
+                        <span class="topbar-icon fa fa-gear" title="Editar senha"></span>
+                    </a>
+                    <a href="/app/index.xhtml">
+                        <span class="topbar-item-text">Ajuda</span>
+                        <span class="topbar-icon fa fa-question" title="Ajuda"></span>
+                    </a>
+                    <h:commandLink id="deslogar"
+                                   actionListener="#{usuarioLogadoController.deslogar()}"
+                                   title="Deslogar">
+                        <span class="topbar-item-text">Deslogar</span>
+                        <span class="topbar-icon fa fa-sign-out" title="Deslogar"></span>
+                    </h:commandLink>
+                </div>
+            </h:panelGroup>
+        </div>
+    </h:form>
+</ui:composition>

@@ -1,0 +1,290 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1><ui:insert name="tituloCard"/></h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true"
+                     showDetail="#{not facesContext.validationFailed}"
+                     showSummary="true"
+                     sticky="#{not facesContext.validationFailed}">
+                <p:autoUpdate disabled="false"/>
+            </p:growl>
+
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3 text-center">
+                    <p:graphicImage id="out-photo"
+                                    width="180"
+                                    height="135"
+                                    value="#{freteController.foto != null ? freteController.foto : 'https://via.placeholder.com/180x135'}">
+
+                        <f:param name="id" value="#{freteController.entidade.motorista.id}"/>
+                    </p:graphicImage>
+                </div>
+
+                <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="cpf" value="CPF do Motorista" styleClass="label"/>
+                            <h:outputText id="cpf" value="#{freteController.entidade.motorista.cpf}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-6 ui-lg-8">
+                            <h:outputLabel for="out-nome" value="Nome" styleClass="label"/>
+                            <h:outputText id="out-nome" value="#{freteController.entidade.motorista.nome}"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4">
+                            <h:outputLabel for="out-dt-nascimento" value="Data de Nascimento"
+                                           styleClass="label"/>
+                            <h:outputText id="out-dt-nascimento"
+                                          value="#{freteController.entidade.motorista.dataNascimento}"
+                                          converter="#{localDateConverter}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ContainerIndent text-center marTop20">
+                <h2>Dados do Frete</h2>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="qt-fardos" value="Quant. Fardos" styleClass="label required"/>
+                    <p:inputNumber id="qt-fardos"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha a quantidade de fardos."
+                                   value="#{freteController.entidade.quantidadeFardos}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="cap-media" value="Capacidade Média" styleClass="label required"/>
+                    <p:inputNumber id="cap-media"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha a capacidade média."
+                                   value="#{freteController.entidade.mediaFardos}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="valor-carga" value="Valor da Carga" styleClass="label required"/>
+                    <p:inputNumber id="valor-carga"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha o valor da carga."
+                                   value="#{freteController.entidade.valorCarga}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="valor-frete" value="Valor do Frete" styleClass="label required"/>
+                    <p:inputNumber id="valor-frete"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="Por favor, preencha o valor do frete."
+                                   value="#{freteController.entidade.valorFrete}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="adiantamento" value="Adiantamento" styleClass="label required"/>
+                    <p:inputNumber id="adiantamento"
+                                   minValue="0"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   rendered="true"
+                                   requiredMessage="Por favor, preencha o adiantamento. Digite 0 caso não haja adiantamento."
+                                   value="#{freteController.entidade.adiantamento}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="saldo" value="Saldo" styleClass="label required"/>
+                    <p:inputNumber id="saldo"
+                                   minValue="0"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   rendered="true"
+                                   requiredMessage="Por favor, preencha o saldo. Digite 0 caso não haja saldo."
+                                   value="#{freteController.entidade.saldo}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="pamcary" value="Desc. Pamcary" styleClass="label"/>
+                    <p:inputNumber id="pamcary"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   value="#{freteController.entidade.pamcary}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="agenciador" value="Agenciador" styleClass="label required"/>
+                    <p:inputText id="agenciador" required="true"
+                                 requiredMessage="Por favor, preencha o agenciador."
+                                 value="#{freteController.entidade.agenciador}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="capacidade-veiculo" value="Capacidade do Veículo" styleClass="label"/>
+                    <p:inputNumber id="capacidade-veiculo"
+                                   maxValue="1000000"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   value="#{freteController.entidade.capacidadeVeiculo}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="placa" value="Placa" styleClass="label required"/>
+                    <p:inputText id="placa" styleClass="text-uppercase" required="true"
+                                 requiredMessage="Por favor, preencha a placa do veículo."
+                                 converter="#{uppercaseConverter}"
+                                 value="#{freteController.entidade.placa}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="km" value="Km" styleClass="label"/>
+                    <p:inputNumber id="km"
+                                   maxValue="100000"
+                                   maxlength="5"
+                                   thousandSeparator=""
+                                   decimalPlaces="2"
+                                   value="#{freteController.entidade.km}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-12 ui-lg-6">
+                    <h:panelGroup id="div-destinos">
+                        <p:dataTable id="destinos"
+                                     var="destino"
+                                     emptyMessage="Nenhum registro encontrado."
+                                     value="#{freteController.entidade.destinos}">
+
+                            <f:facet name="header">Destinos</f:facet>
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{destino.nome}"/>
+                            </p:column>
+
+                            <p:column headerText="Ações" styleClass="largura80px text-center">
+                                <p:commandButton title="Excluir"
+                                                 icon="fa fa-trash"
+                                                 styleClass="action-icons red-button fluid-button"
+                                                 immediate="true"
+                                                 update="div-destinos"
+                                                 action="#{freteController.excluirDestino(destino.nome)}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div class="ui-inputgroup marTop10">
+                            <p:inputText id="nome-destino"
+                                         placeholder="Nome"
+                                         value="#{freteController.destino.nome}"/>
+
+                            <p:commandButton id="btn_add_destino"
+                                             styleClass="blue-button"
+                                             icon="fa fa-plus"
+                                             iconPos="left"
+                                             value="Adicionar"
+                                             title="Adicionar destino."
+                                             actionListener="#{freteController.novoDestino(freteController.destino)}"
+                                             update="div-destinos"
+                                             process="div-destinos"/>
+                        </div>
+                    </h:panelGroup>
+                </div>
+                <div class="ui-g-12 ui-md-12 ui-lg-6">
+                    <h:panelGroup id="div-cidades">
+
+                        <p:dataTable id="cidades"
+                                     var="cidade"
+                                     emptyMessage="Nenhum registro encontrado."
+                                     value="#{freteController.entidade.cidades}">
+
+                            <f:facet name="header">Cidades</f:facet>
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{cidade.nome}"/>
+                            </p:column>
+
+                            <p:column headerText="Ações" styleClass="largura80px text-center">
+                                <p:commandButton title="Excluir"
+                                                 icon="fa fa-trash"
+                                                 styleClass="action-icons red-button fluid-button"
+                                                 immediate="true"
+                                                 update="div-cidades"
+                                                 action="#{freteController.excluirCidade(cidade.nome)}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div class="ui-inputgroup marTop10">
+                            <p:inputText id="nome-cidade"
+                                         placeholder="Nome"
+                                         value="#{freteController.cidade.nome}"/>
+
+                            <p:commandButton id="btn_add_cidade"
+                                             styleClass="blue-button"
+                                             icon="fa fa-plus"
+                                             iconPos="left"
+                                             value="Adicionar"
+                                             title="Adicionar cidade."
+                                             actionListener="#{freteController.novaCidade(freteController.cidade)}"
+                                             update="div-cidades"
+                                             process="div-cidades"/>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                    <h:outputLabel for="observacao" value="Observação" styleClass="label"/>
+                    <p:inputText id="observacao"
+                                 maxlength="500"
+                                 value="#{freteController.entidade.observacao}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_cancelar"
+                                 action="#{motoristaController.urlProvider.getUrlIndexFrete()}"
+                                 styleClass="red-button form-button Fleft"
+                                 immediate="true"
+                                 icon="fa fa-close"
+                                 iconPos="left"
+                                 value="Cancelar"
+                                 title="Cancelar"/>
+
+                <p:commandButton id="btn_salvar"
+                                 action="#{freteController.salvar()}"
+                                 styleClass="green-button form-button Fright"
+                                 icon="fa fa-save"
+                                 iconPos="left"
+                                 value="Salvar"
+                                 title="Salvar"/>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

@@ -1,0 +1,51 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:po="http://primefaces.org/omega">
+
+    <div class="sidebar">
+        <div class="nano">
+            <div class="nano-content sidebar-scroll-content">
+                <div class="logo">
+                    <p:graphicImage name="logo.png" library="img" width="113"/>
+                </div>
+
+                <h:form styleClass="profile" prependId="false">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <p:graphicImage name="images/profile.png" library="omega-layout"/>
+                    <a id="profile-button" href="#">
+                        <span class="username">#{usuarioLogadoController.usuarioLogado.nome}</span>
+                        <i class="fa fa-fw fa-cog"></i>
+                    </a>
+                    <ul>
+                        <li>
+                            <p:link outcome="/app/usuario/editar-conta">
+                                <i class="fa fa-fw fa-sliders"></i>
+                                <span>
+                                    <h:outputText value="Conta" />
+                                </span>
+                            </p:link>
+                        </li>
+                        <li>
+                            <h:commandLink id="logout"
+                                           action="#{usuarioLogadoController.deslogar()}"
+                                           title="Deslogar">
+                                <i class="fa fa-fw fa-sign-out"></i><span>Deslogar</span>
+                            </h:commandLink>
+                            <!--<a href="/vendas/login.xhtml?logout"><i class="fa fa-fw fa-sign-out"></i><span>Deslogar</span></a>-->
+                        </li>
+                    </ul>
+                </h:form>
+
+                <div class="menu">
+                    <po:menu model="#{menuController.modelMenu}"/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</ui:composition>

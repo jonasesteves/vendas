@@ -1,0 +1,80 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="card">
+        <h1>Usuários</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="false" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false"/>
+            </p:growl>
+
+            <div class="ContainerIndent">
+                <p:menubar>
+                    <p:menuitem value="Sincronizar"
+                                actionListener="#{usuarioController.sincronizar()}"
+                                icon="fa fa-refresh"
+                                ajax="true"
+                                update="usuarios"/>
+                </p:menubar>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="usuarios"
+                             value="#{usuarioController.usuarios}"
+                             emptyMessage="Nenhum registro encontrado."
+                             var="usuario"
+                             rowsPerPageTemplate="5, 10, 25, 50, 100"
+                             paginator="true"
+                             rows="10">
+
+                    <f:facet name="header">
+                        Lista de usuários do sistema
+                    </f:facet>
+
+                    <p:column headerText="Id Top">
+                        <h:outputText value="#{usuario.idTop}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome"
+                              filterBy="#{usuario.nome}"
+                              sortBy="#{usuario.nome}">
+                        <h:outputText value="#{usuario.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="E-mail"
+                              sortBy="#{usuario.email}"
+                              filterBy="#{usuario.email}">
+                        <h:outputText value="#{usuario.email}" styleClass="break"/>
+                    </p:column>
+
+                    <p:column headerText="Tipo de Usuário" sortBy="#{usuario.tipoUsuario.nome}">
+                        <h:outputText value="#{usuario.tipoUsuario.nome}" styleClass="break"/>
+                    </p:column>
+
+                    <p:column headerText="Último Login" sortBy="#{usuario.ultimoLogin}" styleClass="largura150px">
+                        <h:outputText value="#{usuario.ultimoLogin}" converter="#{localDateTimeConverter}"/>
+                    </p:column>
+
+                    <p:column headerText="Ativo" sortBy="#{usuario.ativo}"
+                              styleClass="text-center largura80px">
+                        <h:outputText styleClass="#{usuario.ativo == true ? 'fa fa-check-square-o' : ''} fa-lg"
+                                      title="Ativo"/>
+                    </p:column>
+
+                    <p:column headerText="Ações" styleClass="text-center largura80px">
+                        <p:commandButton title="Editar"
+                                         icon="fa fa-edit"
+                                         styleClass="action-icons orange-button"
+                                         ajax="false"
+                                         action="#{usuarioController.urlProvider.getUrlEditarUsuario(usuario.id)}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </h:form>
+    </div>
+</ui:composition>

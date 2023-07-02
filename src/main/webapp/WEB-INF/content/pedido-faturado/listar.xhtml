@@ -1,0 +1,125 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1>Pedidos Faturados</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false" />
+            </p:growl>
+
+            <h:panelGroup id="grupo">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="dt-inicial" value="Data Inicial" styleClass="label"/>
+                        <p:calendar id="dt-inicial"
+                                    locale="pt_BR"
+                                    mask="true"
+                                    pattern="dd/MM/yyyy"
+                                    mindate="01/01/2012"
+                                    maxdate="today"
+                                    required="true"
+                                    requiredMessage="Por favor, preencha a data inicial."
+                                    converter="#{localDateConverter}"
+                                    value="#{pedidoFaturadoController.dataInicial}"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="dt-final" value="Data Final" styleClass="label"/>
+                        <p:calendar id="dt-final"
+                                    locale="pt_BR"
+                                    mask="true"
+                                    pattern="dd/MM/yyyy"
+                                    maxdate="today"
+                                    required="true"
+                                    requiredMessage="Por favor, preencha a data final."
+                                    converter="#{localDateConverter}"
+                                    value="#{pedidoFaturadoController.dataFinal}"/>
+                    </div>
+                </div>
+                <div class="ContainerIndent">
+                    <p:commandButton id="btn_limpar"
+                                     styleClass="black-button Fleft"
+                                     ajax="true"
+                                     update="grupo"
+                                     process="@this"
+                                     icon="fa fa-eraser"
+                                     iconPos="left"
+                                     value="Limpar"
+                                     title="Limpar item"
+                                     actionListener="#{pedidoFaturadoController.limpar()}"
+                                     immediate="true">
+                    </p:commandButton>
+
+                    <p:commandButton id="btn_buscar"
+                                     styleClass="aqua-button Fright"
+                                     icon="fa fa-search" iconPos="left" value="Buscar"
+                                     title="Buscar pedidos"
+                                     ajax="true"
+                                     update="pedidos"
+                                     actionListener="#{pedidoFaturadoController.buscarPedidos()}">
+                    </p:commandButton>
+                    <span style="clear: left; display: block;"></span>
+                </div>
+
+                <div class="ContainerIndent">
+                    <p:dataTable id="pedidos"
+                                 var="pedido"
+                                 value="#{pedidoFaturadoController.pedidos}"
+                                 emptyMessage="Nenhum registro encontrado."
+                                 rowsPerPageTemplate="5, 10, 25, 50, 100"
+                                 reflow="true"
+                                 paginator="true"
+                                 rows="5">
+
+                        <p:column headerText="Emissão" sortBy="#{pedido.dataEmissao}">
+                            <h:outputText value="#{pedido.dataEmissao}" converter="#{localDateConverter}">
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="NF" sortBy="#{pedido.notaFiscal}">
+                            <h:outputText value="#{pedido.notaFiscal}"/>
+                        </p:column>
+
+                        <p:column headerText="Cliente" sortBy="#{pedido.cliente.nome}" styleClass="nome-cliente">
+                            <h:outputText value="#{pedido.cliente.nome}" styleClass="break"/>
+                        </p:column>
+
+                        <p:column headerText="Cidade">
+                            <h:outputText value="#{pedido.cliente.cidade}"/>
+                        </p:column>
+
+                        <p:column headerText="Valor NF" styleClass="largura80px">
+                            <h:outputText value="#{pedido.valorTotal}" styleClass="break Fright">
+                                <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Ações" styleClass="text-center largura80px" exportable="false">
+                            <p:commandButton title="Detalhar"
+                                             icon="fa fa-info"
+                                             styleClass="action-icons blue-button"
+                                             ajax="false"
+                                             action="#{pedidoFaturadoController.urlProvider.getUrlDetalharPedidoFaturado(pedido.notaFiscal)}"/>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+
+                <div class="ContainerIndent">
+                    <h3>Exportar dados da tabela</h3>
+                    <h:commandLink>
+                        <p:graphicImage name="/img/xls.png" />
+                        <p:dataExporter type="xlsx" target="pedidos" fileName="pedidos-faturados"/>
+                    </h:commandLink>
+                </div>
+            </h:panelGroup>
+        </h:form>
+    </div>
+
+</ui:composition>

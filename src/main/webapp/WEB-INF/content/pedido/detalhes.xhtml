@@ -1,0 +1,174 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="card">
+        <h1>Pedido Detalhado</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="id-pedido" value="Pedido" styleClass="label"/>
+                    <h:outputText id="id-pedido" value="#{pedidoController.entidade.id}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="emissao-pedido" value="Emissão" styleClass="label"/>
+                    <h:outputText id="emissao-pedido"
+                                  value="#{pedidoController.entidade.dataEmissao}"
+                                  converter="#{localDateConverter}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="cliente-pedido" value="Cliente" styleClass="label"/>
+                    <h:outputText id="cliente-pedido" value="#{pedidoController.entidade.cliente.nome}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="empresa-pedido" value="Empresa" styleClass="label"/>
+                    <h:outputText id="empresa-pedido" value="#{pedidoController.entidade.empresa.nome}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="tipo-pedido" value="Tipo de Pedido" styleClass="label"/>
+                    <h:outputText id="tipo-pedido" value="#{pedidoController.entidade.operacao}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="tipo-bonificacao" value="Tipo de Bonificação" styleClass="label"/>
+                    <h:outputText id="tipo-bonificacao" value="#{pedidoController.entidade.tipoBonificacao.descricao}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="ag-cobrador-pedido" value="Agente Cobrador" styleClass="label"/>
+                    <h:outputText id="ag-cobrador-pedido" value="#{pedidoController.entidade.agenteCobrador.descricao}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="tipo-cobranca-pedido" value="Tipo de Cobrança" styleClass="label"/>
+                    <h:outputText id="tipo-cobranca-pedido" value="#{pedidoController.entidade.tipoCobranca.descricao}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-4 ui-lg-4">
+                    <h:outputLabel for="forma-pgto-pedido" value="Forma de Pagamento" styleClass="label"/>
+                    <h:outputText id="forma-pgto-pedido" value="#{pedidoController.entidade.formaPagamento.descricao}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable var="item" value="#{pedidoController.entidade.itens}"
+                             emptyMessage="Nenhum registro encontrado."
+                             sortMode="multiple"
+                             reflow="true">
+                    <f:facet name="header">
+                        Itens do Pedido
+                    </f:facet>
+                    <p:column headerText="Cód." styleClass="largura80px">
+                        <h:outputText value="#{item.idEstoque}"/>
+                    </p:column>
+
+                    <p:column headerText="Descrição">
+                        <h:outputText value="#{item.nome}" styleClass="break"/>
+                    </p:column>
+
+                    <p:column headerText="Quant." styleClass="largura80px">
+                        <h:outputText value="${item.quantidade}" styleClass="break Fright"/>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Unit." styleClass="largura80px">
+                        <h:outputText value="${item.valorTabelado}" styleClass="break Fright">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Venda." styleClass="largura80px">
+                        <h:outputText value="${item.valorUnitario}" styleClass="break Fright">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Desc. (%)" styleClass="largura80px">
+                        <h:outputText value="${item.desconto}" styleClass="break Fright">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Total." styleClass="largura80px">
+                        <h:outputText value="${item.valorTotal}" styleClass="break Fright">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="desc-medio" value="Desconto Médio" styleClass="label"/>
+                        <p:inputNumber id="desc-medio"
+                                       thousandSeparator=""
+                                       decimalPlaces="2"
+                                       value="#{pedidoController.entidade.descontoMedio}"
+                                       readonly="true"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <h:outputLabel for="vlr-total" value="Valor Total" styleClass="label"/>
+                        <p:inputText id="vlr-total" value="#{pedidoController.entidade.valorTotal}" readonly="true">
+                            <f:convertNumber minFractionDigits="2"/>
+                        </p:inputText>
+                    </div>
+                </div>
+
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                        <h:outputLabel for="obs-pedido" value="Observações" styleClass="label"/>
+                        <p:inputText id="obs-pedido" value="#{pedidoController.entidade.observacao}" readonly="true"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_voltar"
+                                 onclick="history.go(-1)"
+                                 styleClass="blue-button form-button Fleft"
+                                 immediate="true"
+                                 icon="fa fa-arrow-left"
+                                 iconPos="left"
+                                 value="Voltar"
+                                 title="Voltar"/>
+
+                <p:commandButton id="btn_repetir"
+                                 rendered="#{pedidoController.repetirPedido(pedidoController.entidade.cliente.id)}"
+                                 action="#{pedidoController.repetirPedido()}"
+                                 styleClass="green-button form-button Fright"
+                                 icon="fa fa-cart-plus"
+                                 iconPos="left"
+                                 value="Repetir Pedido"
+                                 title="Repetir pedido">
+                    <p:confirm header="Confirmação" message="Deseja realmente repetir o pedido?"
+                               icon="ui-icon-alert"/>
+                </p:commandButton>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="nao" value="Não" type="button"
+                                 styleClass="ui-confirmdialog-no red-button"
+                                 icon="ui-icon-close"/>
+                <p:commandButton id="sim" value="Sim" type="button"
+                                 styleClass="green-button ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+            </p:confirmDialog>
+        </h:form>
+    </div>
+</ui:composition>

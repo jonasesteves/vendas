@@ -1,0 +1,86 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="card">
+        <h1>Pedido Embarcado</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-2">
+                    <h:outputLabel for="id-pedido" value="Pedido" styleClass="label"/>
+                    <h:outputText id="id-pedido" value="#{pedidoEmbarcadoController.entidade.id}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-2">
+                    <h:outputLabel for="emissao-pedido" value="Emissão" styleClass="label"/>
+                    <h:outputText id="emissao-pedido"
+                                 value="#{pedidoEmbarcadoController.entidade.dataEmissao}"
+                                 converter="#{localDateConverter}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-2">
+                    <h:outputLabel for="cod-embarque" value="Cód. Embarque" styleClass="label"/>
+                    <h:outputText id="cod-embarque"
+                                  value="#{pedidoEmbarcadoController.entidade.codEmbarque}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <h:outputLabel for="cliente-pedido" value="Cliente" styleClass="label"/>
+                    <h:outputText id="cliente-pedido" value="#{pedidoEmbarcadoController.entidade.cliente.nome}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable var="item" value="#{pedidoEmbarcadoController.entidade.itens}"
+                             emptyMessage="Nenhum registro encontrado."
+                             sortMode="multiple"
+                             reflow="true">
+                    <f:facet name="header">
+                        Itens do Pedido
+                    </f:facet>
+                    <p:column headerText="Cód." styleClass="largura80px">
+                        <h:outputText value="#{item.idEstoque}"/>
+                    </p:column>
+
+                    <p:column headerText="Descrição">
+                        <h:outputText value="#{item.nome}" styleClass="break"/>
+                    </p:column>
+
+                    <p:column headerText="Quant." styleClass="largura80px">
+                        <h:outputText value="${item.quantidade}" styleClass="break Fright"/>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Venda." styleClass="largura80px">
+                        <h:outputText value="${item.valorUnitario}" styleClass="break Fright">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Total." styleClass="largura80px">
+                        <h:outputText value="${item.valorTotal}" styleClass="break Fright">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_voltar"
+                                 action="#{pedidoEmbarcadoController.urlProvider.getUrlIndexPedidoEmbarcado()}"
+                                 styleClass="blue-button form-button Fleft"
+                                 immediate="true"
+                                 icon="fa fa-arrow-left"
+                                 iconPos="left"
+                                 value="Voltar"
+                                 title="Voltar"/>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+        </h:form>
+    </div>
+</ui:composition>

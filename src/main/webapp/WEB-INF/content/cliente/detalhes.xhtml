@@ -1,0 +1,160 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1>Detalhes do Cliente</h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="id" value="Cód." styleClass="label"/>
+                    <h:outputText id="id" value="#{clienteController.entidade.id}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <h:outputLabel for="nome" value="Nome" styleClass="label"/>
+                    <h:outputText id="nome" value="#{clienteController.entidade.nome}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="ult-venda" value="Última Venda" styleClass="label"/>
+                    <h:outputText id="ult-venda" value="#{clienteController.entidade.dataUltimaVenda}"
+                                  converter="#{localDateConverter}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <h:outputLabel for="endereco" value="Endereço" styleClass="label"/>
+                    <h:outputText id="endereco" value="#{clienteController.entidade.endereco}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="cnpj" value="CNPJ" styleClass="label"/>
+                    <h:outputText id="cnpj" value="#{clienteController.entidade.cpfCnpj}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="situacao" value="Situação" styleClass="label"/>
+                    <h:outputText id="situacao" value="#{clienteController.entidade.situacao}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <h:outputLabel for="motivo" value="Motivo" styleClass="label"/>
+                    <h:outputText id="motivo" value="#{clienteController.entidade.motivo}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="telefone" value="Telefone" styleClass="label"/>
+                    <h:outputText id="telefone" value="#{clienteController.entidade.telefone}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="telefone2" value="Telefone 2" styleClass="label"/>
+                    <h:outputText id="telefone2" value="#{clienteController.entidade.telefone2}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="telefone3" value="Telefone 3" styleClass="label"/>
+                    <h:outputText id="telefone3" value="#{clienteController.entidade.telefone3}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="celular" value="Celular" styleClass="label"/>
+                    <h:outputText id="celular" value="#{clienteController.entidade.celular}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="celular-claro" value="Celular Claro" styleClass="label"/>
+                    <h:outputText id="celular-claro" value="#{clienteController.entidade.celularClaro}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="celular-oi" value="Celular Oi" styleClass="label"/>
+                    <h:outputText id="celular-oi" value="#{clienteController.entidade.celularOi}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="celular-tim" value="Celular Tim" styleClass="label"/>
+                    <h:outputText id="celular-tim" value="#{clienteController.entidade.celularTim}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                    <h:outputLabel for="fax" value="Fax" styleClass="label"/>
+                    <h:outputText id="fax" value="#{clienteController.entidade.fax}"/>
+                </div>
+            </div>
+
+            <div class="ui-fluid ui-g">
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <h:outputLabel for="email" value="E-mail" styleClass="label"/>
+                    <h:outputText id="email" value="#{clienteController.entidade.email}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    <h:outputLabel for="contato" value="Contato" styleClass="label"/>
+                    <h:outputText id="contato" value="#{clienteController.entidade.contato}"/>
+                </div>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable var="pedido" value="#{clienteController.buscarUltimosPedidos()}"
+                             emptyMessage="Nenhum registro encontrado."
+                             sortMode="multiple"
+                             reflow="true">
+                    <f:facet name="header">
+                        Últimos Pedidos
+                    </f:facet>
+                    <p:column headerText="Cód.">
+                        <h:outputText value="#{pedido.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Emissão">
+                        <h:outputText value="#{pedido.dataEmissao}" converter="#{localDateConverter}"/>
+                    </p:column>
+
+                    <p:column headerText="Vlr. Total.">
+                        <h:outputText value="${pedido.valorTotal}" styleClass="Fright">
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Ações" styleClass="text-center">
+                        <p:commandButton title="Detalhar"
+                                         icon="fa fa-info"
+                                         styleClass="action-icons blue-button"
+                                         ajax="false"
+                                         action="#{pedidoController.urlProvider.getUrlDetalharPedido(pedido.id)}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton id="btn_voltar"
+                                 action="#{clienteController.urlProvider.getUrlIndexCliente()}"
+                                 styleClass="blue-button form-button Fleft"
+                                 immediate="true"
+                                 icon="fa fa-arrow-left"
+                                 iconPos="left"
+                                 value="Voltar"
+                                 title="Voltar"/>
+
+                <span style="clear: left; display: block;"></span>
+            </div>
+        </h:form>
+    </div>
+
+</ui:composition>

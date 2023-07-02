@@ -1,0 +1,153 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="card">
+        <h1><ui:insert name="tituloCard"/></h1>
+
+        <h:form prependId="false">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl life="10000" escape="true" showDetail="true" showSummary="true">
+                <p:autoUpdate disabled="false"/>
+            </p:growl>
+
+            <div class="ContainerIndent">
+                <p:fieldset id="filtros"
+                            legend="Filtros"
+                            toggleable="true"
+                            toggleSpeed="400"
+                            collapsed="true">
+
+                    <div class="ui-fluid ui-g">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="data" value="Data" styleClass="label"/>
+                            <p:calendar id="data"
+                                        locale="pt_BR"
+                                        navigator="true"
+                                        showOn="button"
+                                        mask="true"
+                                        pattern="dd/MM/yyyy"
+                                        converter="#{localDateConverter}"
+                                        value="#{freteController.dataModel.filter.freteFiltro.data}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="motorista" value="Motorista" styleClass="label"/>
+                            <p:inputText id="motorista" value="#{freteController.dataModel.filter.freteFiltro.nome}"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4">
+                            <h:outputLabel for="destino" value="Destino" styleClass="label"/>
+                            <p:inputText id="destino" value="#{freteController.dataModel.filter.freteFiltro.destino}"/>
+                        </div>
+                    </div>
+
+                    <div class="ContainerIndent">
+                        <p:commandButton id="btn_limpar"
+                                         styleClass="black-button Fleft"
+                                         icon="fa fa-eraser"
+                                         iconPos="left"
+                                         value="Limpar"
+                                         title="Limpar campos."
+                                         actionListener="#{freteController.dataModel.filter.reset()}"
+                                         action="#{motoristaController.filtrar()}"
+                                         update="filtros fretes">
+                        </p:commandButton>
+
+                        <p:commandButton id="btn_filtrar"
+                                         styleClass="blue-button Fright"
+                                         icon="fa fa-filter"
+                                         iconPos="left"
+                                         value="Filtrar"
+                                         title="Filtrar pelos campos preenchidos."
+                                         actionListener="#{freteController.filtrar()}"
+                                         update="fretes">
+                        </p:commandButton>
+                    </div>
+                </p:fieldset>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:dataTable id="fretes"
+                             var="frete"
+                             value="#{freteController.dataModel}"
+                             emptyMessage="Nenhum registro encontrado."
+                             lazy="true"
+                             rowsPerPageTemplate="5, 10, 25, 50, 100"
+                             reflow="true"
+                             paginator="true" rows="5">
+
+                    <p:column headerText="Data">
+                        <h:outputText converter="#{localDateConverter}" value="${frete.data}"/>
+                    </p:column>
+
+                    <p:column headerText="Motorista">
+                        <h:outputText value="${frete.motorista.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Valor do Frete" styleClass="text-right">
+                        <h:outputText value="${frete.valorFrete}"/>
+                    </p:column>
+
+                    <p:column headerText="Ações" styleClass="text-center" exportable="false">
+                        <p:commandButton title="Detalhar"
+                                         icon="fa fa-info"
+                                         styleClass="action-icons blue-button"
+                                         action="#{freteController.urlProvider.getUrlDetalharFrete(frete.id, frete.motorista.id)}"/>
+
+                        <p:commandButton title="Editar"
+                                         icon="fa fa-edit"
+                                         styleClass="action-icons orange-button"
+                                         action="#{freteController.urlProvider.getUrlEditarFrete(frete.id)}"/>
+
+                        <p:commandButton title="Imprimir contrato"
+                                         icon="fa fa-print"
+                                         styleClass="action-icons green-button"
+                                         onclick="this.form.target='_blank'"
+                                         action="#{freteController.imprimirContrato(frete.id)}"
+                                         ajax="false">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="ContainerIndent">
+                <p:commandButton title="Novo Frete"
+                                 icon="fa fa-plus"
+                                 styleClass="green-button form-button" value="Novo Frete"
+                                 onclick="PF('dlg-novo-frete').show();"/>
+            </div>
+        </h:form>
+
+        <p:dialog modal="true"
+                  header="Cadastrar novo frete"
+                  responsive="true"
+                  widgetVar="dlg-novo-frete">
+
+            <p>Digite o CPF do motorista.</p>
+
+            <h:form prependId="false" styleClass="marTop10">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                <div class="ui-inputgroup">
+                    <p:inputMask mask="999.999.999-99"
+                                 id="cpf"
+                                 validator="CPFValidator"
+                                 placeholder="CPF"
+                                 value="#{motoristaController.entidade.cpf}"/>
+                    <p:commandButton id="btn_buscar_motorista"
+                                     styleClass="blue-button"
+                                     icon="fa fa-search"
+                                     iconPos="left"
+                                     value="Confirmar"
+                                     title="Confirmar CPF."
+                                     action="#{motoristaController.buscaMotorista()}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+    </div>
+
+</ui:composition>
